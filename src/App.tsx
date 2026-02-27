@@ -22,11 +22,11 @@ import { CaliPackage } from './components/sections/CaliPackage';
 import { Tickets } from './components/sections/Tickets';
 import { FAQ } from './components/sections/FAQ';
 
-const PROJECT_NAME = 'technical-live-2026';
+const PROJECT_NAME = 'tay-beach-2026';
 
 export default function App() {
   const [pageData, setPageData] = useState<PageData>(() => {
-    const saved = localStorage.getItem('technical_live_data');
+    const saved = localStorage.getItem('taybeach_data');
     return saved ? JSON.parse(saved) : INITIAL_DATA;
   });
   const [isAdminOpen, setIsAdminOpen] = useState(false);
