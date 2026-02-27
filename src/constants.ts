@@ -242,7 +242,7 @@ export const INITIAL_DATA: PageData = {
     siteName: 'Technical Live',
     adminLogoUrl: '',
     loadingText: 'CARGANDO...',
-    loadingColor: '#D4AF37',
+    loadingColor: '#FFFFFF',
     fontDisplay: 'Space Grotesk',
     fontSans: 'Inter',
     fontDisplayUrl: '',
