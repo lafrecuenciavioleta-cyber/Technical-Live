@@ -387,6 +387,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                         newAcc[idx] = { ...newAcc[idx], content: v };
                         handleChange('welcome', 'accordion', newAcc);
                       }} />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Input label="Texto Botón" value={item.btnText || ''} onChange={(v) => {
+                          const newAcc = [...formData.welcome.accordion];
+                          newAcc[idx] = { ...newAcc[idx], btnText: v };
+                          handleChange('welcome', 'accordion', newAcc);
+                        }} placeholder="Ej: SABER MÁS" />
+                        <Select
+                          label="Destino del Botón"
+                          value={item.btnUrl || ''}
+                          onChange={(v: string) => {
+                            const newAcc = [...formData.welcome.accordion];
+                            newAcc[idx] = { ...newAcc[idx], btnUrl: v };
+                            handleChange('welcome', 'accordion', newAcc);
+                          }}
+                          options={[
+                            { value: '', label: 'Sin enlace' },
+                            ...formData.sectionOrder.map(id => ({
+                              value: `#${id}`,
+                              label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                            })),
+                            { value: 'custom', label: 'URL Personalizada...' }
+                          ]}
+                        />
+                      </div>
+                      {item.btnUrl && !item.btnUrl.startsWith('#') && item.btnUrl !== '' && (
+                        <Input label="URL Personalizada (https://...)" value={item.btnUrl} onChange={(v) => {
+                          const newAcc = [...formData.welcome.accordion];
+                          newAcc[idx] = { ...newAcc[idx], btnUrl: v };
+                          handleChange('welcome', 'accordion', newAcc);
+                        }} />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -397,7 +428,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 <Input label="Etiqueta (Ej: HISTORIA)" value={formData.welcome.subtitle2} onChange={(v) => handleChange('welcome', 'subtitle2', v)} />
                 <Input label="Título 2" value={formData.welcome.title2} onChange={(v) => handleChange('welcome', 'title2', v)} />
                 <TextArea label="Descripción 2" value={formData.welcome.desc2} onChange={(v) => handleChange('welcome', 'desc2', v)} />
-                <Input label="Texto Botón 2" value={formData.welcome.btnText2} onChange={(v) => handleChange('welcome', 'btnText2', v)} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Texto Botón 2" value={formData.welcome.btnText2} onChange={(v) => handleChange('welcome', 'btnText2', v)} />
+                  <Select
+                    label="Destino del Botón"
+                    value={formData.welcome.btnUrl2 || '#'}
+                    onChange={(v) => handleChange('welcome', 'btnUrl2', v)}
+                    options={[
+                      ...formData.sectionOrder.map(id => ({
+                        value: `#${id}`,
+                        label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                      })),
+                      { value: 'custom', label: 'URL Personalizada...' }
+                    ]}
+                  />
+                </div>
+                {formData.welcome.btnUrl2 && !formData.welcome.btnUrl2.startsWith('#') && (
+                  <Input
+                    label="URL Personalizada (https://...)"
+                    value={formData.welcome.btnUrl2}
+                    onChange={(v) => handleChange('welcome', 'btnUrl2', v)}
+                  />
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input label="Imagen 2 (URL)" value={formData.welcome.img2} onChange={(v) => handleChange('welcome', 'img2', v)} icon={<ImageIcon size={16} />} />
                   <Input label="Video 2 (URL MP4 / YouTube - Opcional)" value={formData.welcome.video2 || ''} onChange={(v) => handleChange('welcome', 'video2', v)} icon={<List size={16} />} />
@@ -646,10 +698,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               <Input label="Título" value={formData.caliPackage.title} onChange={(v: string) => handleChange('caliPackage', 'title', v)} />
               <TextArea label="Descripción" value={formData.caliPackage.desc} onChange={(v: string) => handleChange('caliPackage', 'desc', v)} />
               <Input label="Icono (Lucide)" value={formData.caliPackage.icon || 'Plane'} onChange={(v: string) => handleChange('caliPackage', 'icon', v)} />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input label="Texto Botón" value={formData.caliPackage.btnText || ''} onChange={(v: string) => handleChange('caliPackage', 'btnText', v)} />
-                <Input label="URL Redirección" value={formData.caliPackage.btnUrl || ''} onChange={(v: string) => handleChange('caliPackage', 'btnUrl', v)} />
+                <Select
+                  label="Destino del Botón"
+                  value={formData.caliPackage.btnUrl || '#'}
+                  onChange={(v: string) => handleChange('caliPackage', 'btnUrl', v)}
+                  options={[
+                    ...formData.sectionOrder.map(id => ({
+                      value: `#${id}`,
+                      label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                    })),
+                    { value: 'custom', label: 'URL Personalizada...' }
+                  ]}
+                />
               </div>
+              {formData.caliPackage.btnUrl && !formData.caliPackage.btnUrl.startsWith('#') && (
+                <Input
+                  label="URL Personalizada (https://...)"
+                  value={formData.caliPackage.btnUrl}
+                  onChange={(v: string) => handleChange('caliPackage', 'btnUrl', v)}
+                />
+              )}
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] tracking-widest text-white/40 block font-bold uppercase">Beneficios</label>
@@ -1199,11 +1269,7 @@ const Select = ({ label, value, onChange, options }: any) => {
       <select
         value={displayValue}
         onChange={(e) => {
-          if (e.target.value === 'custom') {
-            onChange(''); // Clear to let user type custom URL
-          } else {
-            onChange(e.target.value);
-          }
+          onChange(e.target.value);
         }}
         className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:border-gold focus:outline-none transition-all appearance-none cursor-pointer"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}

@@ -16,16 +16,17 @@ export const INITIAL_DATA: PageData = {
     img1: "http://www.taybeach.com.co/wp-content/uploads/2025/10/rectangle120.webp",
     video1: "",
     accordion: [
-      { title: "Creatividad", content: "Cada detalle está pensado para inspirar. Desde la arquitectura bio-lujo hasta nuestras experiencias artesanales." },
-      { title: "Unidad", content: "Conectamos personas con la naturaleza y entre sí, creando una comunidad vibrante y consciente." },
-      { title: "Calidad", content: "El lujo no es solo lo que ves, sino cómo te sientes. Calidad en cada servicio, en cada plato, en cada amanecer." }
+      { title: "Creatividad", content: "Cada detalle está pensado para inspirar. Desde la arquitectura bio-lujo hasta nuestras experiencias artesanales.", btnText: "SABER MÁS", btnUrl: "" },
+      { title: "Unidad", content: "Conectamos personas con la naturaleza y entre sí, creando una comunidad vibrante y consciente.", btnText: "SABER MÁS", btnUrl: "" },
+      { title: "Calidad", content: "El lujo no es solo lo que ves, sino cómo te sientes. Calidad en cada servicio, en cada plato, en cada amanecer.", btnText: "SABER MÁS", btnUrl: "" }
     ],
     title2: "Tay Beach desde sus inicios",
     subtitle2: "HISTORIA",
     desc2: "Lo que comenzó como un sueño de bio-lujo en las costas del Caribe, se ha convertido en el destino más icónico de la región. Nuestra historia es de pasión, innovación y conexión con la tierra.",
     img2: "http://www.taybeach.com.co/wp-content/uploads/2025/11/DSC04172-scaled.webp",
     video2: "https://player.vimeo.com/external/434045526.sd.mp4?s=c27db2119f25e82a5b137be0375149d790d5824b&profile_id=164&oauth2_token_id=57447761",
-    btnText2: "DESCUBRE NUESTRO VIAJE"
+    btnText2: "DESCUBRE NUESTRO VIAJE",
+    btnUrl2: "#"
   },
   lineup: {
     title: "Artistas 2026",

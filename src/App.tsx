@@ -61,22 +61,31 @@ export default function App() {
 
     // Update Favicon
     const updateFavicon = (url: string) => {
+      // Remove ALL existing favicon/icon links to prevent conflicts
       const existingIcons = document.querySelectorAll("link[rel*='icon']");
       existingIcons.forEach(el => el.parentNode?.removeChild(el));
+
+      // If no URL provided, don't add anything (browser will use default)
+      if (!url) return;
 
       const newIcon = document.createElement('link');
       newIcon.rel = 'icon';
       // Append a timestamp to bypass browser cache
-      const cacheBust = `?t=${new Date().getTime()}`;
-      newIcon.href = (url || '/favicon.ico') + cacheBust;
-
-      // Explicitly set type and sizes to prevent distortion
-      if (url && (url.includes('supabase') || url.toLowerCase().endsWith('.png'))) {
+      newIcon.href = url + (url.includes('?') ? '&' : '?') + `t=${Date.now()}`;
+      // Set type based on URL
+      if (url.toLowerCase().endsWith('.ico')) {
+        newIcon.type = 'image/x-icon';
+      } else {
         newIcon.type = 'image/png';
       }
       newIcon.setAttribute('sizes', '32x32');
-
       document.head.appendChild(newIcon);
+
+      // Also add an apple-touch-icon for better mobile support
+      const appleIcon = document.createElement('link');
+      appleIcon.rel = 'apple-touch-icon';
+      appleIcon.href = url;
+      document.head.appendChild(appleIcon);
     };
 
     updateFavicon(pageData.settings.faviconUrl);
@@ -158,15 +167,6 @@ export default function App() {
   useEffect(() => {
     document.title = pageData.settings.siteName;
     document.documentElement.style.setProperty('--accent-color', pageData.settings.accentColor);
-
-    // Update Favicon
-    let favicon = document.querySelector('link[rel="icon"]');
-    if (!favicon) {
-      favicon = document.createElement('link');
-      (favicon as any).rel = 'icon';
-      document.head.appendChild(favicon);
-    }
-    (favicon as any).href = pageData.settings.logoUrl || '';
 
     // Apply font names
     const displayFont = pageData.settings.fontDisplayUrl ? 'CustomDisplay' : pageData.settings.fontDisplay;

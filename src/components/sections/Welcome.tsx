@@ -78,8 +78,19 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                                                 <p className="text-white/60 font-sans text-sm md:text-base leading-relaxed pb-4 max-w-lg">
                                                     {item.content}
                                                 </p>
-                                                <button className="flex items-center space-x-2 text-[8px] md:text-[10px] tracking-[0.3em] font-archivo font-black text-white hover:text-gold transition-colors uppercase border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full">
-                                                    <span>LEARN MORE</span>
+                                                <button
+                                                    onClick={() => {
+                                                        const url = item.btnUrl || '';
+                                                        if (url.startsWith('#')) {
+                                                            const el = document.getElementById(url.substring(1));
+                                                            el?.scrollIntoView({ behavior: 'smooth' });
+                                                        } else if (url.startsWith('http')) {
+                                                            window.open(url, '_blank');
+                                                        }
+                                                    }}
+                                                    className="flex items-center space-x-2 text-[8px] md:text-[10px] tracking-[0.3em] font-archivo font-black text-white hover:text-gold transition-colors uppercase border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full"
+                                                >
+                                                    <span>{item.btnText || 'SABER MÁS'}</span>
                                                     <ChevronRight size={12} />
                                                 </button>
                                             </motion.div>
@@ -103,7 +114,18 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                         <p className="text-white/60 font-sans text-sm md:text-base leading-relaxed max-w-xl">
                             {data.desc2}
                         </p>
-                        <button className="bg-gold text-white px-6 md:px-8 py-3 md:py-4 rounded-full border border-white/20 font-archivo font-black text-[10px] tracking-[0.3em] flex items-center space-x-3 hover:scale-105 transition-transform uppercase">
+                        <button
+                            onClick={() => {
+                                const url = data.btnUrl2 || '';
+                                if (url.startsWith('#')) {
+                                    const el = document.getElementById(url.substring(1));
+                                    el?.scrollIntoView({ behavior: 'smooth' });
+                                } else if (url.startsWith('http')) {
+                                    window.open(url, '_blank');
+                                }
+                            }}
+                            className="bg-gold text-white px-6 md:px-8 py-3 md:py-4 rounded-full border border-white/20 font-archivo font-black text-[10px] tracking-[0.3em] flex items-center space-x-3 hover:scale-105 transition-transform uppercase"
+                        >
                             <span>{data.btnText2}</span>
                             <ChevronRight size={16} />
                         </button>

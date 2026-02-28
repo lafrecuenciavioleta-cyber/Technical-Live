@@ -33,20 +33,20 @@ export const CaliPackage = ({ data }: { data: PageData['caliPackage'] }) => {
                             ))}
                         </div>
 
-                        {data.btnUrl ? (
-                            <a
-                                href={data.btnUrl}
-                                target={data.btnUrl.startsWith('http') ? '_blank' : '_self'}
-                                rel="noopener noreferrer"
-                                className="mt-8 md:mt-12 inline-block px-8 md:px-12 py-4 md:py-5 bg-gold text-white text-[10px] md:text-[11px] tracking-[0.3em] font-archivo font-black hover:bg-white hover:text-dark transition-all duration-500 uppercase rounded-full border border-gold text-center"
-                            >
-                                {data.btnText || 'SOLICITAR INFORMACIÓN'}
-                            </a>
-                        ) : (
-                            <button className="mt-8 md:mt-12 px-8 md:px-12 py-4 md:py-5 bg-gold text-white text-[10px] md:text-[11px] tracking-[0.3em] font-archivo font-black hover:bg-white hover:text-dark transition-all duration-500 uppercase rounded-full border border-gold">
-                                {data.btnText || 'SOLICITAR INFORMACIÓN'}
-                            </button>
-                        )}
+                        <button
+                            onClick={() => {
+                                const url = data.btnUrl || '';
+                                if (url.startsWith('#')) {
+                                    const el = document.getElementById(url.substring(1));
+                                    el?.scrollIntoView({ behavior: 'smooth' });
+                                } else if (url.startsWith('http')) {
+                                    window.open(url, '_blank');
+                                }
+                            }}
+                            className="mt-8 md:mt-12 px-8 md:px-12 py-4 md:py-5 bg-gold text-white text-[10px] md:text-[11px] tracking-[0.3em] font-archivo font-black hover:bg-white hover:text-dark transition-all duration-500 uppercase rounded-full border border-gold"
+                        >
+                            {data.btnText || 'SOLICITAR INFORMACIÓN'}
+                        </button>
                     </div>
                 </motion.div>
             </div>

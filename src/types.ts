@@ -53,13 +53,14 @@ export interface PageData {
     desc1: string;
     img1: string;
     video1?: string;
-    accordion: { title: string; content: string }[];
+    accordion: { title: string; content: string; btnText?: string; btnUrl?: string }[];
     title2: string;
     subtitle2: string;
     desc2: string;
     img2: string;
     video2?: string;
     btnText2: string;
+    btnUrl2?: string;
   };
   lineup: {
     title: string;
