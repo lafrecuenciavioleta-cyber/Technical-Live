@@ -66,11 +66,25 @@ export const Navbar = ({ data, onAdminClick }: { data: PageData, onAdminClick: (
         <>
             {/* 1. Global Brand Header */}
             <header className="absolute top-0 left-0 w-full z-50 py-6 px-8 flex justify-between items-center">
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                    :root {
+                        --logo-height: ${data.settings.mobileLogoSize || 48}px;
+                    }
+                    @media (min-width: 768px) {
+                        :root {
+                            --logo-height: ${data.settings.logoSize || 60}px;
+                        }
+                    }
+                `}} />
                 <div className="flex items-center space-x-4">
                     <img
                         src={data.settings.logoUrl || undefined}
                         alt="Tay Beach Logo"
-                        className="h-10 md:h-12 w-auto object-contain"
+                        className="w-auto object-contain transition-all duration-300"
+                        style={{
+                            height: `var(--logo-height, ${data.settings.logoSize || 60}px)`
+                        }}
                         referrerPolicy="no-referrer"
                     />
                 </div>

@@ -114,6 +114,8 @@ export interface PageData {
     fontSans: string;
     fontDisplayUrl?: string;
     fontSansUrl?: string;
+    logoSize: number;
+    mobileLogoSize: number;
   };
   sectionOrder: string[];
   hiddenSections: string[];

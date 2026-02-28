@@ -832,6 +832,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       onChange={(v) => handleChange('settings', 'navBrandText', v)}
                       icon={<Type size={16} />}
                     />
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input
+                        label="Tamaño Logo (Escritorio - px)"
+                        value={formData.settings.logoSize}
+                        onChange={(v: string) => handleChange('settings', 'logoSize', parseInt(v) || 0)}
+                        type="number"
+                      />
+                      <Input
+                        label="Tamaño Logo (Móvil - px)"
+                        value={formData.settings.mobileLogoSize}
+                        onChange={(v: string) => handleChange('settings', 'mobileLogoSize', parseInt(v) || 0)}
+                        type="number"
+                      />
+                    </div>
                     <div className="space-y-4">
                       <Input
                         label="URL del Logo Sitio Web"

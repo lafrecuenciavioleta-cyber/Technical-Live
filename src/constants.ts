@@ -247,6 +247,8 @@ export const INITIAL_DATA: PageData = {
     fontSans: 'Inter',
     fontDisplayUrl: '',
     fontSansUrl: '',
+    logoSize: 60,
+    mobileLogoSize: 48,
   },
   sectionOrder: ['welcome', 'experience', 'lineup', 'lodging', 'caliPackage', 'tickets', 'buy', 'faqs'],
   hiddenSections: [],
