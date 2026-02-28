@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageData } from '../types';
-import { Save, X, Image as ImageIcon, Type, DollarSign, List, Clock, Plus, Trash2, MessageCircle, ChevronUp, ChevronDown, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Save, X, Image as ImageIcon, Type, DollarSign, List, Clock, Plus, Trash2, MessageCircle, ChevronUp, ChevronDown, LogOut, Eye, EyeOff, Layout } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface AdminPanelProps {
@@ -23,7 +23,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     };
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'logoUrl' | 'adminLogoUrl' | 'globalBgImage') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'headerLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'adminLogoUrl' | 'globalBgImage') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -868,88 +868,187 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
           {activeTab === 'footer' && (
             <div className="space-y-6">
               <TextArea label="Descripción Footer" value={formData.footer.description} onChange={(v) => handleChange('footer', 'description', v)} />
-              <Input label="Ubicación" value={formData.footer.location} onChange={(v) => handleChange('footer', 'location', v)} />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Input label="Instagram" value={formData.footer.social.instagram} onChange={(v) => {
-                  handleChange('footer', 'social', { ...formData.footer.social, instagram: v });
-                }} />
-                <Input label="Facebook" value={formData.footer.social.facebook} onChange={(v) => {
-                  handleChange('footer', 'social', { ...formData.footer.social, facebook: v });
-                }} />
-                <Input label="Twitter" value={formData.footer.social.twitter} onChange={(v) => {
-                  handleChange('footer', 'social', { ...formData.footer.social, twitter: v });
-                }} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input label="Dirección / Ubicación" value={formData.footer.address} onChange={(v) => handleChange('footer', 'address', v)} />
+                <Input label="Email de Contacto" value={formData.footer.email} onChange={(v) => handleChange('footer', 'email', v)} />
+                <Input label="Teléfono / WhatsApp" value={formData.footer.phone} onChange={(v) => handleChange('footer', 'phone', v)} />
+              </div>
+              <div className="pt-4 border-t border-white/5">
+                <div className="text-gold text-[10px] tracking-widest font-bold uppercase mb-6">Redes Sociales</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Input label="Instagram" value={formData.footer.social.instagram} onChange={(v) => {
+                    handleChange('footer', 'social', { ...formData.footer.social, instagram: v });
+                  }} />
+                  <Input label="Facebook" value={formData.footer.social.facebook} onChange={(v) => {
+                    handleChange('footer', 'social', { ...formData.footer.social, facebook: v });
+                  }} />
+                  <Input label="Twitter" value={formData.footer.social.twitter} onChange={(v) => {
+                    handleChange('footer', 'social', { ...formData.footer.social, twitter: v });
+                  }} />
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === 'settings' && (
-            <div className="space-y-6">
-              <div className="p-6 glass rounded-xl space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
+            <div className="space-y-8">
+              {/* 1. Información General */}
+              <div className="p-8 glass rounded-2xl space-y-6 border border-white/5">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
+                    <Type size={18} />
+                  </div>
+                  <h3 className="text-white font-archivo font-black tracking-tighter text-lg italic uppercase">Información General</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
                     <Input
                       label="Nombre del Sitio (Pestaña del Navegador)"
                       value={formData.settings.siteName}
                       onChange={(v) => handleChange('settings', 'siteName', v)}
-                      icon={<Type size={16} />}
+                      placeholder="Ej: Technical Live 2026"
+                      icon={<Type size={14} />}
                     />
                     <Input
-                      label="Color de Acento (Hex)"
+                      label="Color de Acento (Principal)"
                       value={formData.settings.accentColor}
                       onChange={(v) => handleChange('settings', 'accentColor', v)}
                       type="color"
                     />
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <Input
-                      label="Texto del Menú (ej: TAY BEACH 2026)"
+                      label="Texto del Menú Pill (Fijo)"
                       value={formData.settings.navBrandText}
                       onChange={(v) => handleChange('settings', 'navBrandText', v)}
-                      icon={<Type size={16} />}
+                      placeholder="Ej: TAY BEACH 2026"
+                      icon={<Type size={14} />}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      label="WhatsApp (Ej: 57300...)"
+                      value={formData.settings.whatsappNumber}
+                      onChange={(v) => handleChange('settings', 'whatsappNumber', v)}
+                      placeholder="Número sin el +"
+                      icon={<MessageCircle size={14} />}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Identidad Visual (Logos) */}
+              <div className="p-8 glass rounded-2xl space-y-8 border border-white/5">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
+                    <ImageIcon size={18} />
+                  </div>
+                  <h3 className="text-white font-archivo font-black tracking-tighter text-lg italic uppercase">Identidad Visual (Logos)</h3>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                  {/* Navegación y Tamaños */}
+                  <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/5">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-4">Logo Navegación (Header)</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
                       <Input
-                        label="Tamaño Logo (Escritorio - px)"
+                        label="Tamaño Desk (px)"
                         value={formData.settings.logoSize}
                         onChange={(v: string) => handleChange('settings', 'logoSize', parseInt(v) || 0)}
                         type="number"
                       />
                       <Input
-                        label="Tamaño Logo (Móvil - px)"
+                        label="Tamaño Móvil (px)"
                         value={formData.settings.mobileLogoSize}
                         onChange={(v: string) => handleChange('settings', 'mobileLogoSize', parseInt(v) || 0)}
                         type="number"
                       />
                     </div>
-                    <div className="space-y-4">
+                    <FileUpload
+                      label="Subir Logo Principal"
+                      url={formData.settings.headerLogoUrl}
+                      onFileSelect={(e: any) => handleFileUpload(e, 'headerLogoUrl')}
+                      isUploading={isUploading === 'headerLogoUrl'}
+                      onClear={() => handleChange('settings', 'headerLogoUrl', '')}
+                      accept="image/*"
+                      placeholder="Recomendado: PNG Transparente"
+                    />
+                  </div>
+
+                  {/* Pestaña Navegador (Favicon) */}
+                  <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/5">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-4">Icono Pestaña (Favicon)</h4>
+                    <FileUpload
+                      label="Subir Favicon"
+                      url={formData.settings.faviconUrl}
+                      onFileSelect={(e: any) => handleFileUpload(e, 'faviconUrl')}
+                      isUploading={isUploading === 'faviconUrl'}
+                      onClear={() => handleChange('settings', 'faviconUrl', '')}
+                      accept="image/*"
+                      placeholder="Icono cuadrado (PNG/ICO)"
+                    />
+                  </div>
+
+                  {/* Logo Footer */}
+                  <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/5">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-4">Logo del Footer</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
                       <Input
-                        label="URL del Logo Sitio Web"
-                        value={formData.settings.logoUrl}
-                        onChange={(v) => handleChange('settings', 'logoUrl', v)}
-                        icon={<ImageIcon size={16} />}
+                        label="Tamaño Desk (px)"
+                        value={formData.settings.footerLogoSize}
+                        onChange={(v: string) => handleChange('settings', 'footerLogoSize', parseInt(v) || 0)}
+                        type="number"
                       />
-                      <FileUpload
-                        label="Subir Logo Sitio Web"
-                        url={formData.settings.logoUrl}
-                        onFileSelect={(e: any) => handleFileUpload(e, 'logoUrl')}
-                        isUploading={isUploading === 'logoUrl'}
-                        onClear={() => handleChange('settings', 'logoUrl', '')}
-                        accept="image/*"
-                        placeholder="Subir Imagen (PNG, JPG)"
+                      <Input
+                        label="Tamaño Móvil (px)"
+                        value={formData.settings.footerMobileLogoSize}
+                        onChange={(v: string) => handleChange('settings', 'footerMobileLogoSize', parseInt(v) || 0)}
+                        type="number"
                       />
                     </div>
+                    <FileUpload
+                      label="Subir Logo Footer"
+                      url={formData.settings.footerLogoUrl}
+                      onFileSelect={(e: any) => handleFileUpload(e, 'footerLogoUrl')}
+                      isUploading={isUploading === 'footerLogoUrl'}
+                      onClear={() => handleChange('settings', 'footerLogoUrl', '')}
+                      accept="image/*"
+                      placeholder="Si queda en blanco usa el principal"
+                    />
+                  </div>
+
+                  {/* Logo Panel Admin */}
+                  <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/5">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-4">Logo Admin Panel</h4>
+                    <FileUpload
+                      label="Subir Logo Administrador"
+                      url={formData.settings.adminLogoUrl}
+                      onFileSelect={(e: any) => handleFileUpload(e, 'adminLogoUrl')}
+                      isUploading={isUploading === 'adminLogoUrl'}
+                      onClear={() => handleChange('settings', 'adminLogoUrl', '')}
+                      accept="image/*"
+                      placeholder="Aparece en la barra lateral"
+                    />
                   </div>
                 </div>
+              </div>
 
-                <div className="pt-6 border-t border-white/5 space-y-4">
-                  <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider">Pantalla de Carga</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 3. Estética & Pantallas */}
+              <div className="p-8 glass rounded-2xl space-y-8 border border-white/5">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
+                    <Layout size={18} />
+                  </div>
+                  <h3 className="text-white font-archivo font-black tracking-tighter text-lg italic uppercase">Estética & Pantallas</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  {/* Carga */}
+                  <div className="space-y-6">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase">Pantalla de Carga</h4>
                     <Input
                       label="Texto de Carga"
                       value={formData.settings.loadingText}
                       onChange={(v) => handleChange('settings', 'loadingText', v)}
-                      icon={<Type size={16} />}
                       placeholder="Ej: CARGANDO..."
                     />
                     <Input
@@ -959,11 +1058,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       type="color"
                     />
                   </div>
-                </div>
 
-                <div className="pt-6 border-t border-white/5 space-y-4">
-                  <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider">Fondo de la Página</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Fondo */}
+                  <div className="space-y-6">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase">Fondo Global</h4>
                     <Select
                       label="Tipo de Fondo"
                       value={formData.settings.globalBgType || 'blurred'}
@@ -983,44 +1081,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       />
                     )}
                     {formData.settings.globalBgType === 'image' && (
-                      <div className="space-y-4">
-                        <Input
-                          label="URL Imagen de Fondo"
-                          value={formData.settings.globalBgImage || ''}
-                          onChange={(v) => handleChange('settings', 'globalBgImage', v)}
-                          icon={<ImageIcon size={16} />}
-                        />
-                        <FileUpload
-                          label="Subir Imagen de Fondo"
-                          url={formData.settings.globalBgImage}
-                          onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImage')}
-                          isUploading={isUploading === 'globalBgImage'}
-                          onClear={() => handleChange('settings', 'globalBgImage', '')}
-                          accept="image/*"
-                          placeholder="Subir Imagen (PNG, JPG)"
-                        />
-                      </div>
+                      <FileUpload
+                        label="Subir Imagen de Fondo"
+                        url={formData.settings.globalBgImage}
+                        onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImage')}
+                        isUploading={isUploading === 'globalBgImage'}
+                        onClear={() => handleChange('settings', 'globalBgImage', '')}
+                        accept="image/*"
+                      />
                     )}
                   </div>
-                </div>
-
-                <div className="space-y-4 pt-6 border-t border-white/5">
-                  <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider">Logo Panel Admin</h4>
-                  <Input
-                    label="URL del Logo Admin Panel"
-                    value={formData.settings.adminLogoUrl}
-                    onChange={(v) => handleChange('settings', 'adminLogoUrl', v)}
-                    icon={<ImageIcon size={16} />}
-                  />
-                  <FileUpload
-                    label="Subir Logo Admin Panel"
-                    url={formData.settings.adminLogoUrl}
-                    onFileSelect={(e: any) => handleFileUpload(e, 'adminLogoUrl')}
-                    isUploading={isUploading === 'adminLogoUrl'}
-                    onClear={() => handleChange('settings', 'adminLogoUrl', '')}
-                    accept="image/*"
-                    placeholder="Subir Imagen (PNG, JPG)"
-                  />
                 </div>
               </div>
 

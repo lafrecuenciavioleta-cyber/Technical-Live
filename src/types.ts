@@ -98,7 +98,9 @@ export interface PageData {
   buy: BuySection;
   footer: {
     description: string;
-    location: string;
+    email?: string;
+    phone?: string;
+    address?: string;
     social: {
       instagram: string;
       facebook: string;
@@ -107,11 +109,13 @@ export interface PageData {
   };
   settings: {
     accentColor: string;
-    logoUrl: string;
+    faviconUrl: string;
+    headerLogoUrl: string;
+    footerLogoUrl: string;
+    adminLogoUrl: string;
     whatsappNumber: string;
     navBrandText: string;
     siteName: string;
-    adminLogoUrl: string;
     loadingText: string;
     loadingColor: string;
     fontDisplay: string;
@@ -120,6 +124,8 @@ export interface PageData {
     fontSansUrl?: string;
     logoSize: number;
     mobileLogoSize: number;
+    footerLogoSize: number;
+    footerMobileLogoSize: number;
     globalBgType: 'blurred' | 'image' | 'color';
     globalBgImage?: string;
     globalBgColor?: string;

@@ -77,9 +77,9 @@ export const Navbar = ({ data, onAdminClick }: { data: PageData, onAdminClick: (
                         }
                     }
                 `}} />
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center">
                     <img
-                        src={data.settings.logoUrl || undefined}
+                        src={data.settings.headerLogoUrl || undefined}
                         alt="Tay Beach Logo"
                         className="w-auto object-contain transition-all duration-300"
                         style={{

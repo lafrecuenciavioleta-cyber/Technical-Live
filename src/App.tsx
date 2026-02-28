@@ -55,6 +55,33 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Update site title and favicon
+  useEffect(() => {
+    document.title = pageData.settings.siteName || 'Technical Live';
+
+    // Update Favicon
+    const updateFavicon = (url: string) => {
+      const existingIcons = document.querySelectorAll("link[rel*='icon']");
+      existingIcons.forEach(el => el.parentNode?.removeChild(el));
+
+      const newIcon = document.createElement('link');
+      newIcon.rel = 'icon';
+      // Append a timestamp to bypass browser cache
+      const cacheBust = `?t=${new Date().getTime()}`;
+      newIcon.href = (url || '/favicon.ico') + cacheBust;
+
+      // Explicitly set type and sizes to prevent distortion
+      if (url && (url.includes('supabase') || url.toLowerCase().endsWith('.png'))) {
+        newIcon.type = 'image/png';
+      }
+      newIcon.setAttribute('sizes', '32x32');
+
+      document.head.appendChild(newIcon);
+    };
+
+    updateFavicon(pageData.settings.faviconUrl);
+  }, [pageData.settings.siteName, pageData.settings.faviconUrl]);
+
   // Load data from Supabase on mount
   useEffect(() => {
     async function loadData() {
@@ -80,8 +107,10 @@ export default function App() {
 
         if (loadedData) {
           // Merge sectionOrder: Start with loaded, add any missing ones from INITIAL_DATA
-          // EXPLICIT REMOVAL: Filter out 'location' as per user request to delete the section entirely
-          const baseOrder = (loadedData.sectionOrder || INITIAL_DATA.sectionOrder).filter(id => id !== 'location');
+          // EXPLICIT REMOVAL: Filter out unwanted sections as per user request
+          const baseOrder = (loadedData.sectionOrder || INITIAL_DATA.sectionOrder).filter(id =>
+            !['location', 'aliados', 'patrocinadores', 'sponsors', 'partners'].includes(id)
+          );
           const finalOrder = [...baseOrder];
           INITIAL_DATA.sectionOrder.forEach(id => {
             if (!finalOrder.includes(id) && id !== 'location') {
@@ -95,12 +124,15 @@ export default function App() {
           setPageData({
             ...INITIAL_DATA,
             ...loadedData,
+            settings: {
+              ...INITIAL_DATA.settings,
+              ...(loadedData.settings || {})
+            },
             sectionOrder: finalOrder,
             sectionLabels: Object.fromEntries(
               Object.entries({ ...INITIAL_DATA.sectionLabels, ...(loadedData.sectionLabels || {}) })
-                .filter(([key]) => key !== 'location')
+                .filter(([key]) => !['location', 'aliados', 'patrocinadores', 'sponsors', 'partners'].includes(key))
             ),
-            settings: { ...INITIAL_DATA.settings, ...(loadedData.settings || {}) },
             hero: { ...INITIAL_DATA.hero, ...(loadedData.hero || {}) },
             welcome: { ...INITIAL_DATA.welcome, ...(loadedData.welcome || {}) },
             lineup: { ...INITIAL_DATA.lineup, ...(loadedData.lineup || {}) },

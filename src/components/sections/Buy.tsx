@@ -68,7 +68,7 @@ export const Buy = ({ data }: { data: BuySection }) => {
   }, [data.widgetUrl]);
 
   return (
-    <section className="py-24 px-4 bg-dark relative overflow-hidden w-full max-w-[100vw]">
+    <section className="py-24 px-4 bg-dark/20 backdrop-blur-sm relative overflow-hidden w-full max-w-[100vw]">
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
