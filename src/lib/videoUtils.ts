@@ -27,5 +27,6 @@ export const getYouTubeEmbedUrl = (url: string | null | undefined): string => {
 
     // Parameters for background-style video (autoplay, mute, loop, no controls)
     // playlist parameter is required for looping YouTube videos
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&playsinline=1`;
+    // enablejsapi=1 can help with some browser restrictions
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
 };

@@ -25,8 +25,8 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                             isYouTubeUrl(data.video1) ? (
                                 <iframe
                                     src={getYouTubeEmbedUrl(data.video1)}
-                                    className="w-full h-full object-cover pointer-events-none"
-                                    allow="autoplay; encrypted-media"
+                                    className="w-full h-full object-cover"
+                                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                                     title="Welcome Video 1"
                                 />
                             ) : (
@@ -118,8 +118,8 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                             isYouTubeUrl(data.video2) ? (
                                 <iframe
                                     src={getYouTubeEmbedUrl(data.video2)}
-                                    className="w-full h-full object-cover pointer-events-none"
-                                    allow="autoplay; encrypted-media"
+                                    className="w-full h-full object-cover"
+                                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                                     title="Welcome Video 2"
                                 />
                             ) : (

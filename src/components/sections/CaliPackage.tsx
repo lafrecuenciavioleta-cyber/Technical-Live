@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Plane } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { PageData } from '../../types';
 
 export const CaliPackage = ({ data }: { data: PageData['caliPackage'] }) => {
+    const IconComponent = (Icons as any)[data.icon || 'Plane'] || Icons.Plane;
+
     return (
         <section id="caliPackage" className="py-16 md:py-24 bg-dark/20 backdrop-blur-sm">
             <div className="max-w-4xl mx-auto px-6">
@@ -16,7 +18,7 @@ export const CaliPackage = ({ data }: { data: PageData['caliPackage'] }) => {
                     <div className="absolute -bottom-[2px] -right-[2px] w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-gold rounded-br-2xl"></div>
 
                     <div className="text-center relative z-10">
-                        <Plane className="mx-auto mb-6 md:mb-8 text-gold" size={40} />
+                        <IconComponent className="mx-auto mb-6 md:mb-8 text-gold" size={40} />
                         <h2 className="text-2xl md:text-5xl font-archivo font-black tracking-tighter mb-4 md:mb-6 italic uppercase">{data.title}</h2>
                         <p className="text-white/70 font-sans font-light text-sm md:text-base tracking-wide mb-8 md:mb-12">
                             {data.desc}

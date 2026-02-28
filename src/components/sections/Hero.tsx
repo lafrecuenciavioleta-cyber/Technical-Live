@@ -13,8 +13,8 @@ export const Hero = ({ data }: { data: PageData['hero'] }) => {
                 {isYT ? (
                     <iframe
                         src={getYouTubeEmbedUrl(data.videoUrl)}
-                        className="w-full h-[120%] -translate-y-[10%] object-cover pointer-events-none"
-                        allow="autoplay; encrypted-media"
+                        className="w-full h-[120%] -translate-y-[10%] object-cover"
+                        allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                         title="Hero Video"
                     />
                 ) : (
@@ -80,8 +80,13 @@ export const Hero = ({ data }: { data: PageData['hero'] }) => {
                 >
                     <button
                         onClick={() => {
-                            const el = document.getElementById('boleteria');
-                            el?.scrollIntoView({ behavior: 'smooth' });
+                            const url = data.ctaUrl || '#boleteria';
+                            if (url.startsWith('#')) {
+                                const el = document.getElementById(url.substring(1));
+                                el?.scrollIntoView({ behavior: 'smooth' });
+                            } else {
+                                window.open(url, '_blank');
+                            }
                         }}
                         className="inline-block px-10 md:px-16 py-4 md:py-5 bg-white text-dark text-[10px] md:text-[12px] tracking-[0.5em] font-black hover:bg-gold hover:text-white transition-all duration-500 rounded-full border-[2px] md:border-[3px] border-white hover:border-gold shadow-[0_0_50px_rgba(255,255,255,0.2)] cursor-pointer"
                     >

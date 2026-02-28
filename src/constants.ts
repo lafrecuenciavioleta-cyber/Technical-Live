@@ -6,6 +6,7 @@ export const INITIAL_DATA: PageData = {
     subtitle: 'Santa Marta 2026 | Una experiencia inmersiva en el Tay Beach Hotel',
     date: '2026-07-15T00:00:00',
     ctaText: 'RESERVAR AHORA',
+    ctaUrl: '#boleteria',
     bgImage: 'https://www.taybeach.com.co/wp-content/uploads/2025/10/foto.webp',
     videoUrl: 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27db2119f25e82a5b137be0375149d790d5824b&profile_id=164&oauth2_token_id=57447761',
   },
@@ -163,6 +164,7 @@ export const INITIAL_DATA: PageData = {
   caliPackage: {
     title: 'Paquete Especial Cali',
     desc: 'Logística premium diseñada exclusivamente para nuestro público en la capital del Valle.',
+    icon: 'Plane',
     items: [
       { title: 'Vuelos Chárter', desc: 'Directos Cali - Santa Marta' },
       { title: 'Traslados', desc: 'Privados Aeropuerto - Hotel' },
@@ -181,6 +183,8 @@ export const INITIAL_DATA: PageData = {
         features: ['Acceso General 3 Días', 'Welcome Drink', 'Zona de Descanso'],
         recommended: false,
         bgImage: 'https://picsum.photos/seed/tay-early/800/1200?blur=2',
+        btnUrl: '#buy',
+        btnText: 'COMPRAR AHORA',
       },
       {
         name: 'Anytime Ticket',
@@ -188,6 +192,8 @@ export const INITIAL_DATA: PageData = {
         features: ['Acceso General 3 Días', 'Fast Track Entry', 'Kit de Bienvenida', 'Acceso a After-Parties'],
         recommended: true,
         bgImage: 'https://picsum.photos/seed/tay-anytime/800/1200?blur=2',
+        btnUrl: '#buy',
+        btnText: 'COMPRAR AHORA',
       },
       {
         name: 'Backstage Exp',
@@ -195,6 +201,8 @@ export const INITIAL_DATA: PageData = {
         features: ['Acceso VIP Total', 'Open Bar Premium', 'Cena con Artistas', 'Transporte Privado'],
         recommended: false,
         bgImage: 'https://picsum.photos/seed/tay-backstage/800/1200?blur=2',
+        btnUrl: '#buy',
+        btnText: 'COMPRAR AHORA',
       },
     ],
   },
@@ -249,6 +257,8 @@ export const INITIAL_DATA: PageData = {
     fontSansUrl: '',
     logoSize: 60,
     mobileLogoSize: 48,
+    globalBgType: 'blurred',
+    globalBgColor: '#000000',
   },
   sectionOrder: ['welcome', 'experience', 'lineup', 'lodging', 'caliPackage', 'tickets', 'buy', 'faqs'],
   hiddenSections: [],

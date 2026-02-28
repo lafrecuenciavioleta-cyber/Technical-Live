@@ -227,19 +227,46 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
-      {/* Global Background Video (Blurred & Static) */}
-      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-dark">
-        <video
-          key={pageData.hero.videoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover blur-[100px] opacity-40 scale-110"
-        >
-          {pageData.hero.videoUrl && <source src={pageData.hero.videoUrl} type="video/mp4" />}
-        </video>
-        <div className="absolute inset-0 bg-dark/20"></div>
+      {/* Global Background Container */}
+      <div
+        className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-1000"
+        style={{
+          backgroundColor: pageData.settings.globalBgType === 'color' ? pageData.settings.globalBgColor : '#000000'
+        }}
+      >
+        {pageData.settings.globalBgType === 'blurred' && (
+          <div className="absolute inset-0 w-full h-full">
+            {/* If it's a direct video link, show it blurred */}
+            {pageData.hero.videoUrl && !pageData.hero.videoUrl.includes('youtube') && !pageData.hero.videoUrl.includes('youtu.be') ? (
+              <video
+                key={pageData.hero.videoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover blur-[100px] opacity-40 scale-110"
+              >
+                <source src={pageData.hero.videoUrl} type="video/mp4" />
+              </video>
+            ) : pageData.hero.bgImage ? (
+              /* Fallback to Hero Image (which works for YouTube or when no video is present) */
+              <img
+                src={pageData.hero.bgImage}
+                alt=""
+                className="w-full h-full object-cover blur-[100px] opacity-40 scale-110"
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-dark/20"></div>
+          </div>
+        )}
+
+        {pageData.settings.globalBgType === 'image' && pageData.settings.globalBgImage && (
+          <img
+            src={pageData.settings.globalBgImage}
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
+        )}
       </div>
 
       <Navbar

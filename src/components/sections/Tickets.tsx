@@ -41,8 +41,19 @@ export const Tickets = ({ data }: { data: PageData['tickets'] }) => {
                                     ))}
                                 </ul>
 
-                                <button className={`w-full py-3 md:py-4 text-[10px] md:text-[11px] tracking-[0.3em] font-archivo font-black transition-all duration-500 rounded-full ${tier.recommended ? 'bg-gold text-white border border-gold hover:bg-white hover:text-dark' : 'border border-white/20 hover:bg-white hover:text-dark'} uppercase`}>
-                                    COMPRAR AHORA
+                                <button
+                                    onClick={() => {
+                                        const url = tier.btnUrl || '#buy';
+                                        if (url.startsWith('#')) {
+                                            const el = document.getElementById(url.substring(1));
+                                            el?.scrollIntoView({ behavior: 'smooth' });
+                                        } else {
+                                            window.open(url, '_blank');
+                                        }
+                                    }}
+                                    className={`w-full py-3 md:py-4 text-[10px] md:text-[11px] tracking-[0.3em] font-archivo font-black transition-all duration-500 rounded-full ${tier.recommended ? 'bg-gold text-white border border-gold hover:bg-white hover:text-dark' : 'border border-white/20 hover:bg-white hover:text-dark'} uppercase`}
+                                >
+                                    {tier.btnText || 'COMPRAR AHORA'}
                                 </button>
                             </div>
                         </div>

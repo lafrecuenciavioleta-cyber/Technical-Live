@@ -28,6 +28,8 @@ export interface TicketTier {
   features: string[];
   recommended: boolean;
   bgImage?: string;
+  btnUrl?: string;
+  btnText?: string;
 }
 
 export interface BuySection {
@@ -42,6 +44,7 @@ export interface PageData {
     subtitle: string;
     date: string;
     ctaText: string;
+    ctaUrl?: string;
     bgImage: string;
     videoUrl: string;
   };
@@ -76,6 +79,7 @@ export interface PageData {
   caliPackage: {
     title: string;
     desc: string;
+    icon?: string;
     items: CaliItem[];
     btnText?: string;
     btnUrl?: string;
@@ -116,6 +120,9 @@ export interface PageData {
     fontSansUrl?: string;
     logoSize: number;
     mobileLogoSize: number;
+    globalBgType: 'blurred' | 'image' | 'color';
+    globalBgImage?: string;
+    globalBgColor?: string;
   };
   sectionOrder: string[];
   hiddenSections: string[];

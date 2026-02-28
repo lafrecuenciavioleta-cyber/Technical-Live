@@ -23,7 +23,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     };
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'logoUrl' | 'adminLogoUrl') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'logoUrl' | 'adminLogoUrl' | 'globalBgImage') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -310,7 +310,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               <Input label="Título Principal" value={formData.hero.title} onChange={(v) => handleChange('hero', 'title', v)} />
               <Input label="Subtítulo" value={formData.hero.subtitle} onChange={(v) => handleChange('hero', 'subtitle', v)} />
               <Input label="Fecha del Evento" value={formData.hero.date} onChange={(v) => handleChange('hero', 'date', v)} type="datetime-local" />
-              <Input label="Texto Botón CTA" value={formData.hero.ctaText} onChange={(v) => handleChange('hero', 'ctaText', v)} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Texto Botón CTA" value={formData.hero.ctaText} onChange={(v) => handleChange('hero', 'ctaText', v)} />
+                <Select
+                  label="Destino del Botón"
+                  value={formData.hero.ctaUrl || '#boleteria'}
+                  onChange={(v) => handleChange('hero', 'ctaUrl', v)}
+                  options={[
+                    ...formData.sectionOrder.map(id => ({
+                      value: `#${id}`,
+                      label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                    })),
+                    { value: 'custom', label: 'URL Personalizada...' }
+                  ]}
+                />
+              </div>
+
+              {formData.hero.ctaUrl && !formData.hero.ctaUrl.startsWith('#') && formData.hero.ctaUrl !== '#boleteria' && (
+                <Input
+                  label="URL Personalizada (https://...)"
+                  value={formData.hero.ctaUrl}
+                  onChange={(v) => handleChange('hero', 'ctaUrl', v)}
+                />
+              )}
+
+              {/* Handler for "custom" selection to clear if needed or keep existing */}
               <Input label="Imagen de Fondo (URL)" value={formData.hero.bgImage} onChange={(v) => handleChange('hero', 'bgImage', v)} icon={<ImageIcon size={16} />} />
               <Input label="Video de Fondo (URL MP4 o YouTube)" value={formData.hero.videoUrl} onChange={(v) => handleChange('hero', 'videoUrl', v)} icon={<List size={16} />} />
             </div>
@@ -340,15 +364,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                   </div>
                   {(formData.welcome.accordion || []).map((item, idx) => (
                     <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
-                      <div className="absolute top-4 right-4 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => moveItem('welcome', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={14} /></button>
-                        <button onClick={() => moveItem('welcome', idx, 'down')} disabled={idx === formData.welcome.accordion.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={14} /></button>
-                        <button
-                          onClick={() => removeItem('welcome', idx)}
-                          className="text-white/20 hover:text-red-500 transition-colors"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                      <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                        <div className="flex items-center space-x-3">
+                          <button onClick={() => moveItem('welcome', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={16} /></button>
+                          <button onClick={() => moveItem('welcome', idx, 'down')} disabled={idx === formData.welcome.accordion.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={16} /></button>
+                          <button
+                            onClick={() => removeItem('welcome', idx)}
+                            className="text-white/40 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
                       <Input label={`Título ${idx + 1}`} value={item.title} onChange={(v) => {
                         const newAcc = [...formData.welcome.accordion];
@@ -396,15 +423,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 </div>
                 {(formData.lineup.artists || []).map((artist, idx) => (
                   <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="absolute top-6 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => moveItem('lineup', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={16} /></button>
-                      <button onClick={() => moveItem('lineup', idx, 'down')} disabled={idx === formData.lineup.artists.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={16} /></button>
-                      <button
-                        onClick={() => removeItem('lineup', idx)}
-                        className="text-white/20 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
+                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ARTISTA {idx + 1}</div>
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => moveItem('lineup', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
+                        <button onClick={() => moveItem('lineup', idx, 'down')} disabled={idx === formData.lineup.artists.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
+                        <button
+                          onClick={() => removeItem('lineup', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input label="Nombre" value={artist.name} onChange={(v) => {
@@ -451,17 +481,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               <div className="grid grid-cols-1 gap-8">
                 {(formData.experience.items || []).map((item, idx) => (
                   <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="absolute top-6 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => moveItem('experience', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={16} /></button>
-                      <button onClick={() => moveItem('experience', idx, 'down')} disabled={idx === formData.experience.items.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={16} /></button>
-                      <button
-                        onClick={() => removeItem('experience', idx)}
-                        className="text-white/20 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
+                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">EXPERIENCIA {idx + 1}</div>
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => moveItem('experience', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
+                        <button onClick={() => moveItem('experience', idx, 'down')} disabled={idx === formData.experience.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
+                        <button
+                          onClick={() => removeItem('experience', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-gold text-[10px] tracking-widest font-bold uppercase">EXPERIENCIA {idx + 1}</div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input label="Título" value={item.title} onChange={(v) => handleNestedChange('experience', idx, 'title', v)} />
                       <Input label="Duración" value={item.duration || ''} onChange={(v) => handleNestedChange('experience', idx, 'duration', v)} />
@@ -492,17 +524,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 </div>
                 {(formData.lodging.suites || []).map((suite, idx) => (
                   <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="absolute top-6 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => moveItem('lodging', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={16} /></button>
-                      <button onClick={() => moveItem('lodging', idx, 'down')} disabled={idx === formData.lodging.suites.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={16} /></button>
-                      <button
-                        onClick={() => removeItem('lodging', idx)}
-                        className="text-white/20 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
+                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">SUITE {idx + 1}</div>
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => moveItem('lodging', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
+                        <button onClick={() => moveItem('lodging', idx, 'down')} disabled={idx === formData.lodging.suites.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
+                        <button
+                          onClick={() => removeItem('lodging', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-gold text-[10px] tracking-widest font-bold uppercase">SUITE {idx + 1}</div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input label="Nombre" value={suite.name} onChange={(v) => {
                         const newSuites = [...formData.lodging.suites];
@@ -609,11 +643,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'caliPackage' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.caliPackage.title} onChange={(v) => handleChange('caliPackage', 'title', v)} />
-              <TextArea label="Descripción" value={formData.caliPackage.desc} onChange={(v) => handleChange('caliPackage', 'desc', v)} />
+              <Input label="Título" value={formData.caliPackage.title} onChange={(v: string) => handleChange('caliPackage', 'title', v)} />
+              <TextArea label="Descripción" value={formData.caliPackage.desc} onChange={(v: string) => handleChange('caliPackage', 'desc', v)} />
+              <Input label="Icono (Lucide)" value={formData.caliPackage.icon || 'Plane'} onChange={(v: string) => handleChange('caliPackage', 'icon', v)} />
               <div className="grid grid-cols-2 gap-4">
-                <Input label="Texto Botón" value={formData.caliPackage.btnText || ''} onChange={(v) => handleChange('caliPackage', 'btnText', v)} />
-                <Input label="URL Redirección" value={formData.caliPackage.btnUrl || ''} onChange={(v) => handleChange('caliPackage', 'btnUrl', v)} />
+                <Input label="Texto Botón" value={formData.caliPackage.btnText || ''} onChange={(v: string) => handleChange('caliPackage', 'btnText', v)} />
+                <Input label="URL Redirección" value={formData.caliPackage.btnUrl || ''} onChange={(v: string) => handleChange('caliPackage', 'btnUrl', v)} />
               </div>
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
@@ -629,15 +664,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {(formData.caliPackage.items || []).map((item, idx) => (
                     <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
-                      <div className="absolute top-2 right-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => moveItem('caliPackage', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={12} /></button>
-                        <button onClick={() => moveItem('caliPackage', idx, 'down')} disabled={idx === formData.caliPackage.items.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={12} /></button>
-                        <button
-                          onClick={() => removeItem('caliPackage', idx)}
-                          className="text-white/20 hover:text-red-500 transition-colors"
-                        >
-                          <Trash2 size={12} />
-                        </button>
+                      <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
+                        <div className="text-gold text-[8px] tracking-widest font-bold uppercase">BENEFICIO {idx + 1}</div>
+                        <div className="flex items-center space-x-2">
+                          <button onClick={() => moveItem('caliPackage', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={14} /></button>
+                          <button onClick={() => moveItem('caliPackage', idx, 'down')} disabled={idx === formData.caliPackage.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={14} /></button>
+                          <button
+                            onClick={() => removeItem('caliPackage', idx)}
+                            className="text-white/40 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
                       <Input label="Beneficio" value={item.title} onChange={(v) => {
                         const newItems = [...formData.caliPackage.items];
@@ -673,18 +711,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 </div>
                 {(formData.tickets.tiers || []).map((tier, idx) => (
                   <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="absolute top-6 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => moveItem('tickets', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={16} /></button>
-                      <button onClick={() => moveItem('tickets', idx, 'down')} disabled={idx === formData.tickets.tiers.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={16} /></button>
-                      <button
-                        onClick={() => removeItem('tickets', idx)}
-                        className="text-white/20 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
                       <div className="text-gold text-[10px] tracking-widest font-bold uppercase">TIER {idx + 1}</div>
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => moveItem('tickets', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
+                        <button onClick={() => moveItem('tickets', idx, 'down')} disabled={idx === formData.tickets.tiers.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
+                        <button
+                          onClick={() => removeItem('tickets', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex justify-end items-center">
                       <label className="flex items-center space-x-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -720,6 +760,40 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       newTiers[idx] = { ...newTiers[idx], features: v.split('\n').filter(Boolean) };
                       handleChange('tickets', 'tiers', newTiers);
                     }} />
+                    <Input label="Texto del Botón" value={tier.btnText || 'COMPRAR AHORA'} onChange={(v: string) => {
+                      const newTiers = [...formData.tickets.tiers];
+                      newTiers[idx] = { ...newTiers[idx], btnText: v };
+                      handleChange('tickets', 'tiers', newTiers);
+                    }} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Select
+                        label="Destino del Botón"
+                        value={tier.btnUrl || '#buy'}
+                        onChange={(v: string) => {
+                          const newTiers = [...formData.tickets.tiers];
+                          newTiers[idx] = { ...newTiers[idx], btnUrl: v };
+                          handleChange('tickets', 'tiers', newTiers);
+                        }}
+                        options={[
+                          ...formData.sectionOrder.map(id => ({
+                            value: `#${id}`,
+                            label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                          })),
+                          { value: 'custom', label: 'URL Personalizada...' }
+                        ]}
+                      />
+                      {tier.btnUrl && !tier.btnUrl.startsWith('#') && tier.btnUrl !== '#buy' && (
+                        <Input
+                          label="URL Personalizada (https://...)"
+                          value={tier.btnUrl}
+                          onChange={(v: string) => {
+                            const newTiers = [...formData.tickets.tiers];
+                            newTiers[idx] = { ...newTiers[idx], btnUrl: v };
+                            handleChange('tickets', 'tiers', newTiers);
+                          }}
+                        />
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -762,17 +836,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 </div>
                 {(formData.faqs.items || []).map((item, idx) => (
                   <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="absolute top-6 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => moveItem('faqs', idx, 'up')} disabled={idx === 0} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronUp size={16} /></button>
-                      <button onClick={() => moveItem('faqs', idx, 'down')} disabled={idx === formData.faqs.items.length - 1} className="text-white/20 hover:text-gold disabled:opacity-0"><ChevronDown size={16} /></button>
-                      <button
-                        onClick={() => removeItem('faqs', idx)}
-                        className="text-white/20 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
+                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">PREGUNTA {idx + 1}</div>
+                      <div className="flex items-center space-x-3">
+                        <button onClick={() => moveItem('faqs', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
+                        <button onClick={() => moveItem('faqs', idx, 'down')} disabled={idx === formData.faqs.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
+                        <button
+                          onClick={() => removeItem('faqs', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-gold text-[10px] tracking-widest font-bold uppercase">PREGUNTA {idx + 1}</div>
                     <Input label="Pregunta" value={item.question} onChange={(v) => {
                       const newItems = [...formData.faqs.items];
                       newItems[idx] = { ...newItems[idx], question: v };
@@ -882,6 +958,49 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       onChange={(v) => handleChange('settings', 'loadingColor', v)}
                       type="color"
                     />
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/5 space-y-4">
+                  <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider">Fondo de la Página</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select
+                      label="Tipo de Fondo"
+                      value={formData.settings.globalBgType || 'blurred'}
+                      onChange={(v: string) => handleChange('settings', 'globalBgType', v)}
+                      options={[
+                        { value: 'blurred', label: 'Efecto Cristal (Portada)' },
+                        { value: 'image', label: 'Imagen Personalizada' },
+                        { value: 'color', label: 'Color Sólido' }
+                      ]}
+                    />
+                    {formData.settings.globalBgType === 'color' && (
+                      <Input
+                        label="Color de Fondo"
+                        value={formData.settings.globalBgColor || '#000000'}
+                        onChange={(v: string) => handleChange('settings', 'globalBgColor', v)}
+                        type="color"
+                      />
+                    )}
+                    {formData.settings.globalBgType === 'image' && (
+                      <div className="space-y-4">
+                        <Input
+                          label="URL Imagen de Fondo"
+                          value={formData.settings.globalBgImage || ''}
+                          onChange={(v) => handleChange('settings', 'globalBgImage', v)}
+                          icon={<ImageIcon size={16} />}
+                        />
+                        <FileUpload
+                          label="Subir Imagen de Fondo"
+                          url={formData.settings.globalBgImage}
+                          onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImage')}
+                          isUploading={isUploading === 'globalBgImage'}
+                          onClear={() => handleChange('settings', 'globalBgImage', '')}
+                          accept="image/*"
+                          placeholder="Subir Imagen (PNG, JPG)"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -999,6 +1118,35 @@ const Input = ({ label, value, onChange, type = 'text', icon }: any) => (
     </div>
   </div>
 );
+
+const Select = ({ label, value, onChange, options }: any) => {
+  const isCustom = value && !value.startsWith('#');
+  const displayValue = isCustom ? 'custom' : value;
+
+  return (
+    <div className="space-y-2">
+      <label className="text-[10px] tracking-widest text-white/40 uppercase font-bold">{label}</label>
+      <select
+        value={displayValue}
+        onChange={(e) => {
+          if (e.target.value === 'custom') {
+            onChange(''); // Clear to let user type custom URL
+          } else {
+            onChange(e.target.value);
+          }
+        }}
+        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:border-gold focus:outline-none transition-all appearance-none cursor-pointer"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
+      >
+        {options.map((opt: any) => (
+          <option key={opt.value} value={opt.value} className="bg-zinc-900 text-white">
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
 
 const TextArea = ({ label, value, onChange }: any) => (
   <div className="space-y-2">
