@@ -278,7 +278,7 @@ export default function App() {
         {pageData.settings.globalBgType === 'blurred' && (
           <div className="absolute inset-0 w-full h-full">
             {/* If it's a direct video link, show it blurred */}
-            {pageData.hero.videoUrl && !pageData.hero.videoUrl.includes('youtube') && !pageData.hero.videoUrl.includes('youtu.be') ? (
+            {isVideoUrl(pageData.hero.videoUrl) ? (
               <video
                 key={pageData.hero.videoUrl}
                 autoPlay
@@ -289,10 +289,10 @@ export default function App() {
               >
                 <source src={pageData.hero.videoUrl} type="video/mp4" />
               </video>
-            ) : pageData.hero.bgImage ? (
-              /* Fallback to Hero Image (which works for YouTube or when no video is present) */
+            ) : pageData.hero.bgImage || (!isYouTubeUrl(pageData.hero.videoUrl) && pageData.hero.videoUrl) ? (
+              /* Fallback to Hero Image or Video URL if it's an image */
               <img
-                src={pageData.hero.bgImage}
+                src={pageData.hero.bgImage || pageData.hero.videoUrl}
                 alt=""
                 className="w-full h-full object-cover blur-[100px] opacity-40 scale-110"
               />
