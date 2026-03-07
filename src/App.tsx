@@ -4,6 +4,7 @@ import { INITIAL_DATA } from './constants';
 import { PageData } from './types';
 import { supabase } from './lib/supabase';
 import { Session } from '@supabase/supabase-js';
+import { isYouTubeUrl, getYouTubeEmbedUrl, isVideoUrl } from './lib/videoUtils';
 
 // Components
 import { Navbar } from './components/layout/Navbar';
