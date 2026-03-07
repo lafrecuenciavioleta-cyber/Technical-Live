@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageData } from '../types';
-import { Save, X, Image as ImageIcon, Type, DollarSign, List, Clock, Plus, Trash2, MessageCircle, ChevronUp, ChevronDown, LogOut, Eye, EyeOff, Layout } from 'lucide-react';
+import { Save, X, Image as ImageIcon, Type, DollarSign, List, Clock, Plus, Trash2, MessageCircle, ChevronUp, ChevronDown, LogOut, Eye, EyeOff, Layout, Instagram, Youtube, Music2, Music } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface AdminPanelProps {
@@ -598,6 +598,43 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                         newArtists[idx] = { ...newArtists[idx], img: v };
                         handleChange('lineup', 'artists', newArtists);
                       }} icon={<ImageIcon size={14} />} />
+                    </div>
+                    <TextArea label="Biografía" value={artist.bio || ''} onChange={(v) => {
+                      const newArtists = [...formData.lineup.artists];
+                      newArtists[idx] = { ...newArtists[idx], bio: v };
+                      handleChange('lineup', 'artists', newArtists);
+                    }} />
+                    <Input label="Video YouTube (URL)" value={artist.videoUrl || ''} onChange={(v) => {
+                      const newArtists = [...formData.lineup.artists];
+                      newArtists[idx] = { ...newArtists[idx], videoUrl: v };
+                      handleChange('lineup', 'artists', newArtists);
+                    }} icon={<Youtube size={14} />} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <Input label="Instagram (URL)" value={artist.instagram || ''} onChange={(v) => {
+                        const newArtists = [...formData.lineup.artists];
+                        newArtists[idx] = { ...newArtists[idx], instagram: v };
+                        handleChange('lineup', 'artists', newArtists);
+                      }} icon={<Instagram size={14} />} />
+                      <Input label="Spotify (URL)" value={artist.spotify || ''} onChange={(v) => {
+                        const newArtists = [...formData.lineup.artists];
+                        newArtists[idx] = { ...newArtists[idx], spotify: v };
+                        handleChange('lineup', 'artists', newArtists);
+                      }} icon={<Music2 size={14} />} />
+                      <Input label="SoundCloud (URL)" value={artist.soundcloud || ''} onChange={(v) => {
+                        const newArtists = [...formData.lineup.artists];
+                        newArtists[idx] = { ...newArtists[idx], soundcloud: v };
+                        handleChange('lineup', 'artists', newArtists);
+                      }} icon={<Music size={14} />} />
+                      <Input label="YouTube Channel (URL)" value={artist.youtube || ''} onChange={(v) => {
+                        const newArtists = [...formData.lineup.artists];
+                        newArtists[idx] = { ...newArtists[idx], youtube: v };
+                        handleChange('lineup', 'artists', newArtists);
+                      }} icon={<Youtube size={14} />} />
+                      <Input label="Beatport (URL)" value={artist.beatport || ''} onChange={(v) => {
+                        const newArtists = [...formData.lineup.artists];
+                        newArtists[idx] = { ...newArtists[idx], beatport: v };
+                        handleChange('lineup', 'artists', newArtists);
+                      }} icon={<Music2 size={14} />} />
                     </div>
                   </div>
                 ))}

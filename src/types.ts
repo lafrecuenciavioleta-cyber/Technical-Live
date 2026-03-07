@@ -67,7 +67,19 @@ export interface PageData {
   lineup: {
     title: string;
     subtitle: string;
-    artists: { name: string; genre: string; time: string; img: string }[];
+    artists: {
+      name: string;
+      genre: string;
+      time: string;
+      img: string;
+      bio?: string;
+      videoUrl?: string;
+      instagram?: string;
+      spotify?: string;
+      soundcloud?: string;
+      youtube?: string;
+      beatport?: string;
+    }[];
   };
   experience: {
     title: string;

@@ -34,9 +34,9 @@ export const INITIAL_DATA: PageData = {
     title: "Artistas 2026",
     subtitle: "LINE UP",
     artists: [
-      { name: "Solomun", genre: "Melodic Techno", time: "22:00 - 00:00", img: "https://picsum.photos/seed/solomun/400/400" },
-      { name: "Charlotte de Witte", genre: "Acid Techno", time: "00:00 - 02:00", img: "https://picsum.photos/seed/charlotte/400/400" },
-      { name: "Vintage Culture", genre: "House", time: "20:00 - 22:00", img: "https://picsum.photos/seed/vintage/400/400" },
+      { name: "Solomun", genre: "Melodic Techno", time: "22:00 - 00:00", img: "https://picsum.photos/seed/solomun/400/400", bio: "", instagram: "", spotify: "", soundcloud: "", youtube: "", beatport: "" },
+      { name: "Charlotte de Witte", genre: "Acid Techno", time: "00:00 - 02:00", img: "https://picsum.photos/seed/charlotte/400/400", bio: "", instagram: "", spotify: "", soundcloud: "", youtube: "", beatport: "" },
+      { name: "Vintage Culture", genre: "House", time: "20:00 - 22:00", img: "https://picsum.photos/seed/vintage/400/400", bio: "", instagram: "", spotify: "", soundcloud: "", youtube: "", beatport: "" },
     ]
   },
   experience: {
