@@ -77,9 +77,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     }));
   };
 
-  const addItem = (section: keyof PageData, defaultItem: any) => {
+  const addItem = (section: keyof PageData, defaultItem: any, field?: string) => {
     const sectionData = { ...(formData[section] as any) };
-    const key = sectionData.items ? 'items' : sectionData.tiers ? 'tiers' : sectionData.suites ? 'suites' : sectionData.artists ? 'artists' : 'accordion';
+    const key = field || (sectionData.items ? 'items' : sectionData.tiers ? 'tiers' : sectionData.suites ? 'suites' : sectionData.artists ? 'artists' : 'accordion');
     const items = [...(sectionData[key] || []), defaultItem];
 
     setFormData((prev) => ({
@@ -454,6 +454,92 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input label="Imagen 2 (URL)" value={formData.welcome.img2} onChange={(v) => handleChange('welcome', 'img2', v)} icon={<ImageIcon size={16} />} />
                   <Input label="Video 2 (URL MP4 / YouTube - Opcional)" value={formData.welcome.video2 || ''} onChange={(v) => handleChange('welcome', 'video2', v)} icon={<List size={16} />} />
+                </div>
+
+                <div className="space-y-4 pt-6 border-t border-white/5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] tracking-widest text-white/40 block font-bold uppercase">Acordeón Bloque 2 (Opcional)</label>
+                    <button
+                      onClick={() => addItem('welcome', { title: '', content: '' }, 'accordion2')}
+                      className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
+                    >
+                      <Plus size={14} />
+                      <span>AGREGAR ITEM</span>
+                    </button>
+                  </div>
+                  {(formData.welcome.accordion2 || []).map((item, idx) => (
+                    <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
+                      <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                        <div className="flex items-center space-x-3">
+                          <button onClick={() => {
+                            const newAcc = [...(formData.welcome.accordion2 || [])];
+                            if (idx > 0) {
+                              [newAcc[idx], newAcc[idx - 1]] = [newAcc[idx - 1], newAcc[idx]];
+                              handleChange('welcome', 'accordion2', newAcc);
+                            }
+                          }} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={16} /></button>
+                          <button onClick={() => {
+                            const newAcc = [...(formData.welcome.accordion2 || [])];
+                            if (idx < newAcc.length - 1) {
+                              [newAcc[idx], newAcc[idx + 1]] = [newAcc[idx + 1], newAcc[idx]];
+                              handleChange('welcome', 'accordion2', newAcc);
+                            }
+                          }} disabled={idx === (formData.welcome.accordion2 || []).length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={16} /></button>
+                          <button
+                            onClick={() => {
+                              const newAcc = (formData.welcome.accordion2 || []).filter((_, i) => i !== idx);
+                              handleChange('welcome', 'accordion2', newAcc);
+                            }}
+                            className="text-white/40 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      <Input label={`Título ${idx + 1}`} value={item.title} onChange={(v) => {
+                        const newAcc = [...(formData.welcome.accordion2 || [])];
+                        newAcc[idx] = { ...newAcc[idx], title: v };
+                        handleChange('welcome', 'accordion2', newAcc);
+                      }} />
+                      <TextArea label={`Contenido ${idx + 1}`} value={item.content} onChange={(v) => {
+                        const newAcc = [...(formData.welcome.accordion2 || [])];
+                        newAcc[idx] = { ...newAcc[idx], content: v };
+                        handleChange('welcome', 'accordion2', newAcc);
+                      }} />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Input label="Texto Botón" value={item.btnText || ''} onChange={(v) => {
+                          const newAcc = [...(formData.welcome.accordion2 || [])];
+                          newAcc[idx] = { ...newAcc[idx], btnText: v };
+                          handleChange('welcome', 'accordion2', newAcc);
+                        }} placeholder="Ej: SABER MÁS" />
+                        <Select
+                          label="Destino del Botón"
+                          value={item.btnUrl || ''}
+                          onChange={(v: string) => {
+                            const newAcc = [...(formData.welcome.accordion2 || [])];
+                            newAcc[idx] = { ...newAcc[idx], btnUrl: v };
+                            handleChange('welcome', 'accordion2', newAcc);
+                          }}
+                          options={[
+                            { value: '', label: 'Sin enlace' },
+                            ...formData.sectionOrder.map(id => ({
+                              value: `#${id}`,
+                              label: `Ir a: ${formData.sectionLabels[id] || id.toUpperCase()}`
+                            })),
+                            { value: 'custom', label: 'URL Personalizada...' }
+                          ]}
+                        />
+                      </div>
+                      {item.btnUrl && !item.btnUrl.startsWith('#') && item.btnUrl !== '' && (
+                        <Input label="URL Personalizada (https://...)" value={item.btnUrl} onChange={(v) => {
+                          const newAcc = [...(formData.welcome.accordion2 || [])];
+                          newAcc[idx] = { ...newAcc[idx], btnUrl: v };
+                          handleChange('welcome', 'accordion2', newAcc);
+                        }} />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

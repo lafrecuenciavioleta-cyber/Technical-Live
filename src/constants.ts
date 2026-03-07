@@ -21,6 +21,7 @@ export const INITIAL_DATA: PageData = {
       { title: "Unidad", content: "Conectamos personas con la naturaleza y entre sí, creando una comunidad vibrante y consciente.", btnText: "SABER MÁS", btnUrl: "" },
       { title: "Calidad", content: "El lujo no es solo lo que ves, sino cómo te sientes. Calidad en cada servicio, en cada plato, en cada amanecer.", btnText: "SABER MÁS", btnUrl: "" }
     ],
+    accordion2: [],
     title2: "Tay Beach desde sus inicios",
     subtitle2: "HISTORIA",
     desc2: "Lo que comenzó como un sueño de bio-lujo en las costas del Caribe, se ha convertido en el destino más icónico de la región. Nuestra historia es de pasión, innovación y conexión con la tierra.",

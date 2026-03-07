@@ -55,6 +55,7 @@ export interface PageData {
     img1: string;
     video1?: string;
     accordion: { title: string; content: string; btnText?: string; btnUrl?: string }[];
+    accordion2?: { title: string; content: string; btnText?: string; btnUrl?: string }[];
     title2: string;
     subtitle2: string;
     desc2: string;
