@@ -22,6 +22,9 @@ import { CaliPackage } from './components/sections/CaliPackage';
 import { Tickets } from './components/sections/Tickets';
 import { FAQ } from './components/sections/FAQ';
 
+// Modals
+import { ArtistModal } from './components/modals/ArtistModal';
+
 const PROJECT_NAME = 'tay-beach-2026';
 
 export default function App() {
@@ -31,6 +34,7 @@ export default function App() {
   });
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [selectedArtist, setSelectedArtist] = useState<PageData['lineup']['artists'][0] | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -325,7 +329,7 @@ export default function App() {
                 case 'experience':
                   return <Experience data={pageData.experience} />;
                 case 'lineup':
-                  return <LineUp data={pageData.lineup} />;
+                  return <LineUp data={pageData.lineup} onArtistSelect={setSelectedArtist} />;
                 case 'lodging':
                   return <Lodging data={pageData.lodging} />;
                 case 'caliPackage':
@@ -365,6 +369,16 @@ export default function App() {
         </svg>
       </a>
 
+      {/* Artist Detail Modal */}
+      <AnimatePresence>
+        {selectedArtist && (
+          <ArtistModal
+            artist={selectedArtist}
+            onClose={() => setSelectedArtist(null)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Admin Panel Modal */}
       <AnimatePresence>
         {isAdminOpen && session && (
@@ -372,7 +386,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100]"
+            className="fixed inset-0 z-[10002]"
           >
             <AdminPanel
               data={pageData}
