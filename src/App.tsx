@@ -302,12 +302,17 @@ export default function App() {
           </div>
         )}
 
-        {pageData.settings.globalBgType === 'image' && pageData.settings.globalBgImage && (
-          <img
-            src={pageData.settings.globalBgImage}
-            alt="Background"
-            className="w-full h-full object-cover"
-          />
+        {pageData.settings.globalBgType === 'image' && (
+          <picture className="w-full h-full">
+            {pageData.settings.globalBgImageMobile && (
+              <source media="(max-width: 768px)" srcSet={pageData.settings.globalBgImageMobile} />
+            )}
+            <img
+              src={pageData.settings.globalBgImageDesktop || pageData.settings.globalBgImage || ''}
+              alt="Background"
+              className="w-full h-full object-cover"
+            />
+          </picture>
         )}
       </div>
 

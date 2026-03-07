@@ -23,7 +23,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     };
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'headerLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'adminLogoUrl' | 'globalBgImage') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'headerLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'adminLogoUrl' | 'globalBgImage' | 'globalBgImageMobile' | 'globalBgImageDesktop') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -1275,14 +1275,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       />
                     )}
                     {formData.settings.globalBgType === 'image' && (
-                      <FileUpload
-                        label="Subir Imagen de Fondo"
-                        url={formData.settings.globalBgImage}
-                        onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImage')}
-                        isUploading={isUploading === 'globalBgImage'}
-                        onClear={() => handleChange('settings', 'globalBgImage', '')}
-                        accept="image/*"
-                      />
+                      <div className="space-y-6">
+                        <div>
+                          <FileUpload
+                            label="Fondo Desktop"
+                            url={formData.settings.globalBgImageDesktop}
+                            onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImageDesktop')}
+                            isUploading={isUploading === 'globalBgImageDesktop'}
+                            onClear={() => handleChange('settings', 'globalBgImageDesktop', '')}
+                            accept="image/*"
+                            placeholder="Subir Imagen Desktop"
+                          />
+                          <p className="text-[10px] text-white/30 mt-2 font-medium italic">
+                            * Medida recomendada: 1920 x 1080 px (16:9)
+                          </p>
+                        </div>
+                        <div>
+                          <FileUpload
+                            label="Fondo Mobile"
+                            url={formData.settings.globalBgImageMobile}
+                            onFileSelect={(e: any) => handleFileUpload(e, 'globalBgImageMobile')}
+                            isUploading={isUploading === 'globalBgImageMobile'}
+                            onClear={() => handleChange('settings', 'globalBgImageMobile', '')}
+                            accept="image/*"
+                            placeholder="Subir Imagen Mobile"
+                          />
+                          <p className="text-[10px] text-white/30 mt-2 font-medium italic">
+                            * Medida recomendada: 1080 x 1920 px (9:16)
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>

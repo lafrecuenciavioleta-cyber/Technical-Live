@@ -143,6 +143,8 @@ export interface PageData {
     footerMobileLogoSize: number;
     globalBgType: 'blurred' | 'image' | 'color';
     globalBgImage?: string;
+    globalBgImageMobile?: string;
+    globalBgImageDesktop?: string;
     globalBgColor?: string;
   };
   sectionOrder: string[];
