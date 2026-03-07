@@ -49,6 +49,7 @@ export interface PageData {
     videoUrl: string;
   };
   welcome: {
+    subtitle1: string;
     title1: string;
     desc1: string;
     img1: string;

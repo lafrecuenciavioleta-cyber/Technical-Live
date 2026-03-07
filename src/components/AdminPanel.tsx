@@ -344,6 +344,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
             <div className="space-y-10">
               <div className="space-y-6">
                 <label className="text-gold text-[10px] tracking-widest font-bold uppercase">Bloque 1: Esencia</label>
+                <Input label="Título Superior (Ej: ESENCIA)" value={formData.welcome.subtitle1 || ''} onChange={(v) => handleChange('welcome', 'subtitle1', v)} />
                 <Input label="Título 1" value={formData.welcome.title1} onChange={(v) => handleChange('welcome', 'title1', v)} />
                 <TextArea label="Descripción 1" value={formData.welcome.desc1} onChange={(v) => handleChange('welcome', 'desc1', v)} />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

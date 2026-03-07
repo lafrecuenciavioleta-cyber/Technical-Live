@@ -143,7 +143,7 @@ export default function App() {
                 .filter(([key]) => !['location', 'aliados', 'patrocinadores', 'sponsors', 'partners'].includes(key))
             ),
             hero: { ...INITIAL_DATA.hero, ...(loadedData.hero || {}) },
-            welcome: { ...INITIAL_DATA.welcome, ...(loadedData.welcome || {}) },
+            welcome: { ...INITIAL_DATA.welcome, ...(loadedData.welcome || {}), subtitle1: (loadedData.welcome as any)?.subtitle1 || (INITIAL_DATA.welcome as any).subtitle1 },
             lineup: { ...INITIAL_DATA.lineup, ...(loadedData.lineup || {}) },
             experience: { ...INITIAL_DATA.experience, ...(loadedData.experience || {}) },
             lodging: { ...INITIAL_DATA.lodging, ...(loadedData.lodging || {}) },

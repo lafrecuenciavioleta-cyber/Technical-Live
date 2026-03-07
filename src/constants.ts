@@ -11,6 +11,7 @@ export const INITIAL_DATA: PageData = {
     videoUrl: 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27db2119f25e82a5b137be0375149d790d5824b&profile_id=164&oauth2_token_id=57447761',
   },
   welcome: {
+    subtitle1: "ESENCIA",
     title1: "Nuestra Esencia",
     desc1: "En Tay Beach, la creatividad y la naturaleza se fusionan para crear momentos inolvidables.",
     img1: "http://www.taybeach.com.co/wp-content/uploads/2025/10/rectangle120.webp",

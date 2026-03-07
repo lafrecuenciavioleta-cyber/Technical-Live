@@ -46,7 +46,7 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
 
                     <div className="space-y-6 md:space-y-8 text-left">
                         <div className="space-y-2">
-                            <span className="text-gold tracking-[0.5em] text-[10px] font-archivo font-black uppercase">ESENCIA</span>
+                            <span className="text-gold tracking-[0.5em] text-[10px] font-archivo font-black uppercase">{data.subtitle1 || 'ESENCIA'}</span>
                             <h2 className="text-3xl md:text-6xl font-archivo font-black tracking-tighter uppercase leading-tight">
                                 {data.title1}
                             </h2>
