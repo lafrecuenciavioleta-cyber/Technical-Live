@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { PageData } from '../../types';
 import { Countdown } from './Countdown';
-import { isYouTubeUrl, getYouTubeEmbedUrl } from '../../lib/videoUtils';
+import { isYouTubeUrl, getYouTubeEmbedUrl, isVideoUrl } from '../../lib/videoUtils';
 
 export const Hero = ({ data }: { data: PageData['hero'] }) => {
     const isYT = isYouTubeUrl(data.videoUrl);
@@ -17,7 +17,7 @@ export const Hero = ({ data }: { data: PageData['hero'] }) => {
                         allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                         title="Hero Video"
                     />
-                ) : (
+                ) : isVideoUrl(data.videoUrl) ? (
                     <video
                         autoPlay
                         muted
@@ -27,6 +27,12 @@ export const Hero = ({ data }: { data: PageData['hero'] }) => {
                     >
                         {data.videoUrl && <source src={data.videoUrl} type="video/mp4" />}
                     </video>
+                ) : (
+                    <img
+                        src={data.bgImage || data.videoUrl || undefined}
+                        alt={data.title}
+                        className="w-full h-full object-cover scale-105"
+                    />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-b from-dark/60 via-dark/40 to-dark"></div>
             </div>

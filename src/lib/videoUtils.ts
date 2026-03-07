@@ -7,7 +7,18 @@ export const isYouTubeUrl = (url: string | null | undefined): boolean => {
 };
 
 /**
+ * Detects if a URL points to a common video file format.
+ */
+export const isVideoUrl = (url: string | null | undefined): boolean => {
+    if (!url) return false;
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.endsWith(ext) || lowerUrl.includes(ext + '?'));
+};
+
+/**
  * Converts a standard YouTube URL to an embed URL.
+... (rest of the file)
  * Also adds parameters for autoplay, mute, and loop.
  */
 export const getYouTubeEmbedUrl = (url: string | null | undefined): string => {

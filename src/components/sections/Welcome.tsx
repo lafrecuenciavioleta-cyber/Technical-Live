@@ -6,7 +6,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 import { PageData } from '../../types';
-import { isYouTubeUrl, getYouTubeEmbedUrl } from '../../lib/videoUtils';
+import { isYouTubeUrl, getYouTubeEmbedUrl, isVideoUrl } from '../../lib/videoUtils';
 
 export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
     const [openIndex, setOpenIndex] = useState<number | null>(2); // Default open "Quality" as in image
@@ -22,26 +22,29 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                         whileInView={{ opacity: 1, x: 0 }}
                         className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl"
                     >
-                        {data.video1 ? (
-                            isYouTubeUrl(data.video1) ? (
-                                <iframe
-                                    src={getYouTubeEmbedUrl(data.video1)}
-                                    className="w-full h-full object-cover"
-                                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                    title="Welcome Video 1"
-                                />
-                            ) : (
-                                <video
-                                    src={data.video1 || undefined}
-                                    autoPlay
-                                    muted
-                                    loop
-                                    playsInline
-                                    className="w-full h-full object-cover"
-                                />
-                            )
+                        {isYouTubeUrl(data.video1) ? (
+                            <iframe
+                                src={getYouTubeEmbedUrl(data.video1)}
+                                className="w-full h-full object-cover"
+                                allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                title="Welcome Video 1"
+                            />
+                        ) : isVideoUrl(data.video1) ? (
+                            <video
+                                src={data.video1 || undefined}
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
-                            <img src={data.img1 || undefined} alt={data.title1} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            <img
+                                src={data.img1 || data.video1 || undefined}
+                                alt={data.title1}
+                                className="w-full h-full object-cover"
+                                referrerPolicy="no-referrer"
+                            />
                         )}
                     </motion.div>
 
@@ -189,26 +192,29 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                         whileInView={{ opacity: 1, x: 0 }}
                         className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl order-1 lg:order-2"
                     >
-                        {data.video2 ? (
-                            isYouTubeUrl(data.video2) ? (
-                                <iframe
-                                    src={getYouTubeEmbedUrl(data.video2)}
-                                    className="w-full h-full object-cover"
-                                    allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                    title="Welcome Video 2"
-                                />
-                            ) : (
-                                <video
-                                    src={data.video2 || undefined}
-                                    autoPlay
-                                    muted
-                                    loop
-                                    playsInline
-                                    className="w-full h-full object-cover"
-                                />
-                            )
+                        {isYouTubeUrl(data.video2) ? (
+                            <iframe
+                                src={getYouTubeEmbedUrl(data.video2)}
+                                className="w-full h-full object-cover"
+                                allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                title="Welcome Video 2"
+                            />
+                        ) : isVideoUrl(data.video2) ? (
+                            <video
+                                src={data.video2 || undefined}
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
-                            <img src={data.img2 || undefined} alt={data.title2} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            <img
+                                src={data.img2 || data.video2 || undefined}
+                                alt={data.title2}
+                                className="w-full h-full object-cover"
+                                referrerPolicy="no-referrer"
+                            />
                         )}
                     </motion.div>
                 </div>
