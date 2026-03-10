@@ -234,7 +234,7 @@ export const INITIAL_DATA: PageData = {
   buy: {
     title: 'BOLETERÍA OFICIAL',
     description: 'ASEGURA TU LUGAR EN LA EXPERIENCIA MÁS EXCLUSIVA DEL 2026',
-    widgetUrl: 'https://www.fourvenues.com/assets/iframe/silvafriends/DM50?services=tickets'
+    widgetUrl: 'https://www.fourvenues.com/assets/iframe/technical-live/Q9E4?services=tickets&theme=dark&target=_top'
   },
   footer: {
     description: 'Una celebración de la vida, la música y la naturaleza en el corazón del Caribe colombiano. Únete a nosotros en este viaje sensorial.',

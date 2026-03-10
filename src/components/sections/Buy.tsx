@@ -30,6 +30,7 @@ export const Buy = ({ data }: { data: BuySection }) => {
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+          <base target="_top">
           <style>
             body { 
               margin: 0; 
@@ -104,15 +105,16 @@ export const Buy = ({ data }: { data: BuySection }) => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="w-full relative overflow-hidden"
-          style={{ minHeight: '400px' }}
+          className="w-full relative overflow-hidden bg-transparent"
+          style={{ minHeight: '600px' }}
         >
           <iframe
             src={iframeSrc}
             className="w-full border-0 overflow-hidden transition-all duration-300 pointer-events-auto"
             style={{ height: `${iframeHeight}px`, width: '100%' }}
             title="FourVenues"
-            allow="payment"
+            allow="payment; publickey-credentials-get; clipboard-write; camera; microphone"
+            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation"
             scrolling="no"
           />
         </motion.div>
