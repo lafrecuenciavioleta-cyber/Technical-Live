@@ -4,29 +4,32 @@ import { BuySection } from '../../types';
 
 export const Buy = ({ data }: { data: BuySection }) => {
   useEffect(() => {
-    // Si ya existe el script, no lo volvemos a añadir
-    if (document.getElementById('fv-script')) return;
+    const container = document.getElementById('fv-container');
+    const existingScript = document.getElementById('fv-script');
+    
+    // Si ya existe el script o el widget, limpiamos todo antes de empezar
+    if (existingScript) existingScript.remove();
+    if (container) {
+      const widgetDiv = document.getElementById('fourvenues-iframe');
+      if (widgetDiv) widgetDiv.innerHTML = '';
+    }
 
     const finalUrl = data.widgetUrl.includes('theme=')
       ? data.widgetUrl
       : `${data.widgetUrl}${data.widgetUrl.includes('?') ? '&' : '?'}theme=dark`;
 
-    // Importante: No usamos iframe para evitar bloqueos de X-Frame-Options en pasarelas como PSE
     const script = document.createElement('script');
     script.id = 'fv-script';
     script.src = finalUrl;
     script.async = true;
     
-    // El script de FourVenues busca un elemento con id 'fourvenues-iframe' o lo crea con document.write
-    // Al crearlo nosotros, evitamos que document.write limpie la pantalla.
     document.getElementById('fv-container')?.appendChild(script);
 
     return () => {
-      const existingScript = document.getElementById('fv-script');
-      if (existingScript) existingScript.remove();
-      // Limpiamos el contenido del widget al desmontar
-      const container = document.getElementById('fourvenues-iframe');
-      if (container) container.innerHTML = '';
+      const scriptToRemove = document.getElementById('fv-script');
+      if (scriptToRemove) scriptToRemove.remove();
+      const widgetDiv = document.getElementById('fourvenues-iframe');
+      if (widgetDiv) widgetDiv.innerHTML = '';
     };
   }, [data.widgetUrl]);
 
