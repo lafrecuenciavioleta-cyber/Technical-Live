@@ -29,7 +29,25 @@ export const Buy = ({ data }: { data: BuySection }) => {
     
     container.appendChild(script);
 
-    return cleanup;
+    // Filtro de "Limpieza Visual" para la URL
+    const handleHashCleanup = () => {
+      if (window.location.hash.includes('events')) {
+        // Damos un pequeño margen para que el widget lea el hash antes de ocultarlo
+        setTimeout(() => {
+          if (window.location.hash.includes('events')) {
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        }, 2000);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashCleanup);
+    handleHashCleanup(); // Ejecutar al inicio por si ya viene con hash
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashCleanup);
+      cleanup();
+    };
   }, [data.widgetUrl]);
 
   return (
