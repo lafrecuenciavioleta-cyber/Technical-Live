@@ -7,6 +7,14 @@ export const Buy = ({ data }: { data: BuySection }) => {
     const container = document.getElementById('fv-container');
     if (!container) return;
 
+    // Detectar y persistir promotor (soporta ?p= o ?promoter=)
+    const params = new URLSearchParams(window.location.search);
+    const promoterParam = params.get('p') || params.get('promoter');
+    if (promoterParam) {
+      localStorage.setItem('fv_promoter', promoterParam);
+    }
+    const activePromoter = localStorage.getItem('fv_promoter') || 'technical-live';
+
     // Limpieza agresiva de cualquier rastro previo antes de iniciar
     const cleanup = () => {
       const existingScript = document.getElementById('fv-script');
@@ -18,36 +26,24 @@ export const Buy = ({ data }: { data: BuySection }) => {
 
     cleanup();
 
-    const finalUrl = data.widgetUrl.includes('theme=')
-      ? data.widgetUrl
-      : `${data.widgetUrl}${data.widgetUrl.includes('?') ? '&' : '?'}theme=dark`;
+    let baseUrl = data.widgetUrl;
+    // Adaptar URL al formato de promotor: /assets/iframe/{promoter}/...
+    if (activePromoter !== 'technical-live') {
+      baseUrl = baseUrl.replace('/technical-live/', `/${activePromoter}/`);
+    }
+
+    const finalUrl = baseUrl.includes('theme=')
+      ? baseUrl
+      : `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}theme=dark`;
 
     const script = document.createElement('script');
     script.id = 'fv-script';
     script.src = finalUrl;
     script.async = true;
-    
+
     container.appendChild(script);
 
-    // Filtro de "Limpieza Visual" para la URL
-    const handleHashCleanup = () => {
-      if (window.location.hash.includes('events')) {
-        // Damos un pequeño margen para que el widget lea el hash antes de ocultarlo
-        setTimeout(() => {
-          if (window.location.hash.includes('events')) {
-            window.history.replaceState(null, '', window.location.pathname + window.location.search);
-          }
-        }, 2000);
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashCleanup);
-    handleHashCleanup(); // Ejecutar al inicio por si ya viene con hash
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashCleanup);
-      cleanup();
-    };
+    return cleanup;
   }, [data.widgetUrl]);
 
   return (
@@ -59,7 +55,7 @@ export const Buy = ({ data }: { data: BuySection }) => {
           <motion.h2 className="text-3xl md:text-7xl font-archivo font-black italic text-white leading-tight uppercase">{data.title}</motion.h2>
           <motion.p className="text-white/40 text-[10px] md:text-sm tracking-[0.1em] font-archivo max-w-2xl mx-auto uppercase">{data.description}</motion.p>
         </div>
-        
+
         {/* Contenedor principal donde FourVenues inyectará su widget */}
         <div id="fv-container" className="w-full min-h-[600px] relative">
           <div id="fourvenues-iframe" className="w-full h-full min-h-[600px]" />
