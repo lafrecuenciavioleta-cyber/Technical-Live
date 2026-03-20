@@ -113,8 +113,8 @@ export const Buy = ({ data }: { data: BuySection }) => {
             className="w-full border-0 overflow-hidden transition-all duration-300 pointer-events-auto"
             style={{ height: `${iframeHeight}px`, width: '100%' }}
             title="FourVenues"
-            allow="payment; publickey-credentials-get; clipboard-write; camera; microphone"
-            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation"
+            allow="payment; publickey-credentials-get; clipboard-write; camera; microphone; storage-access; attribution-reporting"
+            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation allow-storage-access-by-user-activation allow-downloads"
             scrolling="no"
           />
         </motion.div>
