@@ -5,14 +5,18 @@ import { BuySection } from '../../types';
 export const Buy = ({ data }: { data: BuySection }) => {
   useEffect(() => {
     const container = document.getElementById('fv-container');
-    const existingScript = document.getElementById('fv-script');
-    
-    // Si ya existe el script o el widget, limpiamos todo antes de empezar
-    if (existingScript) existingScript.remove();
-    if (container) {
-      const widgetDiv = document.getElementById('fourvenues-iframe');
-      if (widgetDiv) widgetDiv.innerHTML = '';
-    }
+    if (!container) return;
+
+    // Limpieza agresiva de cualquier rastro previo antes de iniciar
+    const cleanup = () => {
+      const existingScript = document.getElementById('fv-script');
+      if (existingScript) existingScript.remove();
+      container.innerHTML = '<div id="fourvenues-iframe" class="w-full h-full min-h-[600px]"></div>';
+      // Eliminar cualquier iframe huérfano que FourVenues haya podido inyectar fuera del contenedor
+      document.querySelectorAll('iframe[src*="fourvenues"]').forEach(el => el.remove());
+    };
+
+    cleanup();
 
     const finalUrl = data.widgetUrl.includes('theme=')
       ? data.widgetUrl
@@ -23,14 +27,9 @@ export const Buy = ({ data }: { data: BuySection }) => {
     script.src = finalUrl;
     script.async = true;
     
-    document.getElementById('fv-container')?.appendChild(script);
+    container.appendChild(script);
 
-    return () => {
-      const scriptToRemove = document.getElementById('fv-script');
-      if (scriptToRemove) scriptToRemove.remove();
-      const widgetDiv = document.getElementById('fourvenues-iframe');
-      if (widgetDiv) widgetDiv.innerHTML = '';
-    };
+    return cleanup;
   }, [data.widgetUrl]);
 
   return (
