@@ -10,9 +10,9 @@ export const Buy = ({ data }: { data: BuySection }) => {
     // Detectar y persistir promotor (soporta ?p=, ?promoter= o ruta /nombre/events/...)
     const params = new URLSearchParams(window.location.search);
     const pathParts = window.location.pathname.split('/').filter(Boolean);
-    
+
     let promoterParam = params.get('p') || params.get('promoter');
-    
+
     // Si la ruta es /promotor/events/id, extraemos el promotor de la ruta
     if (!promoterParam && pathParts.length >= 2 && (pathParts.includes('events') || pathParts.includes('tickets'))) {
       const eventsIdx = pathParts.findIndex(p => p === 'events' || p === 'tickets');
@@ -62,7 +62,7 @@ export const Buy = ({ data }: { data: BuySection }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto relative z-10 text-center">
         <div className="mb-12 space-y-4 px-4">
-          <motion.span className="text-gold tracking-[0.5em] text-[10px] font-archivo font-black uppercase">SISTEMA DE VENTAS</motion.span>
+          <motion.span className="text-gold tracking-[0.5em] text-[10px] font-archivo font-black uppercase">BOLETERÍA</motion.span>
           <motion.h2 className="text-3xl md:text-7xl font-archivo font-black italic text-white leading-tight uppercase">{data.title}</motion.h2>
           <motion.p className="text-white/40 text-[10px] md:text-sm tracking-[0.1em] font-archivo max-w-2xl mx-auto uppercase">{data.description}</motion.p>
         </div>
