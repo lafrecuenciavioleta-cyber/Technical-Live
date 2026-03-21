@@ -71,7 +71,7 @@ export const Lodging = ({ data }: { data: PageData['lodging'] }) => {
                     className="flex space-x-6 md:space-x-8 overflow-x-auto pb-10 md:pb-12 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
-                    {(data.suites || []).map((suite, idx) => (
+                    {(data.suites || []).filter(suite => !suite.hidden).map((suite, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, scale: 0.95 }}

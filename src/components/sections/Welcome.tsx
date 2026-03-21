@@ -60,7 +60,7 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
                         </div>
 
                         <div className="space-y-2 md:space-y-4 pt-4 border-t border-white/10">
-                            {data.accordion.map((item, idx) => (
+                            {(data.accordion || []).filter(item => !item.hidden).map((item, idx) => (
                                 <div key={idx} className="border-b border-white/10 pb-2 md:pb-4">
                                     <button
                                         onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
@@ -123,7 +123,7 @@ export const Welcome = ({ data }: { data: PageData['welcome'] }) => {
 
                         {(data.accordion2 && data.accordion2.length > 0) ? (
                             <div className="space-y-2 md:space-y-4 pt-4 border-t border-white/10">
-                                {data.accordion2.map((item, idx) => (
+                                {data.accordion2.filter(item => !item.hidden).map((item, idx) => (
                                     <div key={idx} className="border-b border-white/10 pb-2 md:pb-4">
                                         <button
                                             onClick={() => setOpenIndex2(openIndex2 === idx ? null : idx)}

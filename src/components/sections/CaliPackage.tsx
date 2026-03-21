@@ -25,7 +25,7 @@ export const CaliPackage = ({ data }: { data: PageData['caliPackage'] }) => {
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left">
-                            {(data.items || []).map((item, idx) => (
+                            {(data.items || []).filter(item => !item.hidden).map((item, idx) => (
                                 <div key={idx} className="p-4 md:p-6 glass rounded-lg">
                                     <h4 className="text-gold text-[10px] md:text-[11px] tracking-[0.2em] font-archivo font-black mb-1 md:mb-2 uppercase">{item.title}</h4>
                                     <p className="text-white/80 text-xs md:text-sm font-sans font-light">{item.desc}</p>

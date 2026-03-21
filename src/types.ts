@@ -8,6 +8,7 @@ export interface SuiteItem {
   gallery?: string[];
   btnText?: string;
   btnUrl?: string;
+  hidden?: boolean;
 }
 
 export interface ExperienceItem {
@@ -15,11 +16,13 @@ export interface ExperienceItem {
   desc: string;
   img: string;
   duration?: string;
+  hidden?: boolean;
 }
 
 export interface CaliItem {
   title: string;
   desc: string;
+  hidden?: boolean;
 }
 
 export interface TicketTier {
@@ -30,6 +33,7 @@ export interface TicketTier {
   bgImage?: string;
   btnUrl?: string;
   btnText?: string;
+  hidden?: boolean;
 }
 
 export interface BuySection {
@@ -54,8 +58,8 @@ export interface PageData {
     desc1: string;
     img1: string;
     video1?: string;
-    accordion: { title: string; content: string; btnText?: string; btnUrl?: string }[];
-    accordion2?: { title: string; content: string; btnText?: string; btnUrl?: string }[];
+    accordion: { title: string; content: string; btnText?: string; btnUrl?: string; hidden?: boolean }[];
+    accordion2?: { title: string; content: string; btnText?: string; btnUrl?: string; hidden?: boolean }[];
     title2: string;
     subtitle2: string;
     desc2: string;
@@ -79,6 +83,7 @@ export interface PageData {
       soundcloud?: string;
       youtube?: string;
       beatport?: string;
+      hidden?: boolean;
     }[];
   };
   experience: {
@@ -108,7 +113,7 @@ export interface PageData {
   faqs: {
     title: string;
     subtitle: string;
-    items: { question: string; answer: string }[];
+    items: { question: string; answer: string; hidden?: boolean }[];
   };
   buy: BuySection;
   footer: {

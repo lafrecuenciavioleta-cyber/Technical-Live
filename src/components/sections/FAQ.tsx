@@ -18,7 +18,7 @@ export const FAQ = ({ data }: { data: PageData['faqs'] }) => {
                 </div>
 
                 <div className="space-y-2 md:space-y-4">
-                    {(data.items || []).map((item, idx) => (
+                    {(data.items || []).filter(item => !item.hidden).map((item, idx) => (
                         <div key={idx} className="border-b border-white/10 pb-2 md:pb-4">
                             <button
                                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}

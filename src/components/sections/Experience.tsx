@@ -35,7 +35,7 @@ export const Experience = ({ data }: { data: PageData['experience'] }) => {
                     className="flex space-x-6 md:space-x-8 overflow-x-auto pb-10 md:pb-12 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
-                    {(data.items || []).map((item, idx) => (
+                    {(data.items || []).filter(item => !item.hidden).map((item, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, scale: 0.95 }}

@@ -41,7 +41,7 @@ export const LineUp = ({ data, onArtistSelect }: {
                     className="flex space-x-6 overflow-x-auto pb-12 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
-                    {data.artists.map((artist, idx) => (
+                    {data.artists.filter(artist => !artist.hidden).map((artist, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, scale: 0.95 }}

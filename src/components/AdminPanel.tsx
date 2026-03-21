@@ -213,7 +213,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 setActiveTab(tab.id);
                 setIsSidebarOpen(false); // Cierra en mobile al elegir
               }}
-              className={`w-full text-left px-5 py-3 md:py-3 rounded-full text-[10px] md:text-xs tracking-[0.2em] transition-all font-black uppercase ${activeTab === tab.id ? 'bg-gold text-white shadow-lg shadow-gold/20 scale-[1.02]' : 'text-white/40 hover:bg-white/5 hover:text-white'
+              style={activeTab === tab.id ? { backgroundColor: formData.settings.accentColor } : {}}
+              className={`w-full text-left px-5 py-3 md:py-3 rounded-full text-[10px] md:text-xs tracking-[0.2em] transition-all font-black uppercase ${activeTab === tab.id ? 'text-white shadow-lg scale-[1.02]' : 'text-white/40 hover:bg-white/5 hover:text-white'
                 }`}
             >
               {tab.label}
@@ -248,13 +249,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-10 bg-black pb-32 md:pb-10">
+      <div className="flex-1 overflow-y-auto p-4 md:p-10 bg-black/95 pb-32 md:pb-10 relative">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .admin-display { font-family: var(--font-display, "Space Grotesk", sans-serif); }
+            .admin-sans { font-family: var(--font-sans, "Inter", sans-serif); }
+            .glass-premium {
+              background: rgba(255, 255, 255, 0.03);
+              backdrop-filter: blur(20px);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            }
+            .glass-premium:hover {
+              background: rgba(255, 255, 255, 0.05);
+              border-color: rgba(255, 255, 255, 0.15);
+              transform: translateY(-2px);
+            }
+          `
+        }} />
+
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-serif mb-6 md:mb-8 italic text-gold/80">{tabs.find(t => t.id === activeTab)?.label}</h2>
+          <div className="mb-10 flex items-center gap-4">
+            <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: formData.settings.accentColor }}></div>
+            <h2 className="text-3xl md:text-4xl admin-display font-black italic text-white/90 tracking-tighter uppercase">
+              {tabs.find(t => t.id === activeTab)?.label}
+            </h2>
+          </div>
 
           {activeTab === 'structure' && (
             <div className="space-y-6">
-              <div className="p-6 glass rounded-xl space-y-6">
+              <div className="p-6 glass-premium rounded-2xl space-y-6">
                 <div className="text-gold text-[10px] tracking-widest font-bold uppercase mb-4">Orden de Secciones y Menú</div>
                 <div className="space-y-4">
                   {formData.sectionOrder.map((id, idx) => (
@@ -369,10 +393,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                     </button>
                   </div>
                   {(formData.welcome.accordion || []).map((item, idx) => (
-                    <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
+                    <div key={idx} className={`p-4 glass-premium rounded-xl space-y-3 relative group transition-all ${item.hidden ? 'opacity-50 grayscale' : ''}`}>
                       <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
-                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                        <div className="flex items-center space-x-2">
+                          <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                          {item.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                        </div>
                         <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => {
+                              const newAcc = [...formData.welcome.accordion];
+                              newAcc[idx] = { ...newAcc[idx], hidden: !item.hidden };
+                              handleChange('welcome', 'accordion', newAcc);
+                            }}
+                            className={`p-1 rounded transition-all ${item.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                          >
+                            {item.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                          </button>
                           <button onClick={() => moveItem('welcome', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={16} /></button>
                           <button onClick={() => moveItem('welcome', idx, 'down')} disabled={idx === formData.welcome.accordion.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={16} /></button>
                           <button
@@ -473,10 +510,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                     </button>
                   </div>
                   {(formData.welcome.accordion2 || []).map((item, idx) => (
-                    <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
+                    <div key={idx} className={`p-4 glass-premium rounded-xl space-y-3 relative group transition-all ${item.hidden ? 'opacity-50 grayscale' : ''}`}>
                       <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
-                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                        <div className="flex items-center space-x-2">
+                          <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ITEM {idx + 1}</div>
+                          {item.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                        </div>
                         <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => {
+                              const newAcc = [...(formData.welcome.accordion2 || [])];
+                              newAcc[idx] = { ...newAcc[idx], hidden: !item.hidden };
+                              handleChange('welcome', 'accordion2', newAcc);
+                            }}
+                            className={`p-1 rounded transition-all ${item.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                          >
+                            {item.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                          </button>
                           <button onClick={() => {
                             const newAcc = [...(formData.welcome.accordion2 || [])];
                             if (idx > 0) {
@@ -552,24 +602,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'lineup' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.lineup.title} onChange={(v) => handleChange('lineup', 'title', v)} />
-              <Input label="Subtítulo" value={formData.lineup.subtitle} onChange={(v) => handleChange('lineup', 'subtitle', v)} />
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <label className="text-gold text-[10px] tracking-widest font-bold uppercase">Artistas</label>
-                  <button
-                    onClick={() => addItem('lineup', { name: '', genre: '', time: '', img: '' })}
-                    className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
-                  >
-                    <Plus size={14} />
-                    <span>AGREGAR ARTISTA</span>
-                  </button>
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1 space-y-4">
+                  <Input label="Título" value={formData.lineup.title} onChange={(v) => handleChange('lineup', 'title', v)} />
+                  <Input label="Subtítulo" value={formData.lineup.subtitle} onChange={(v) => handleChange('lineup', 'subtitle', v)} />
                 </div>
+                <button
+                  onClick={() => addItem('lineup', { name: '', genre: '', time: '', img: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
+                >
+                  <Plus size={14} />
+                  <span>AGREGAR ARTISTA</span>
+                </button>
+              </div>
+              <div className="space-y-6">
                 {(formData.lineup.artists || []).map((artist, idx) => (
-                  <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
-                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ARTISTA {idx + 1}</div>
+                  <div key={idx} className={`p-6 glass-premium rounded-2xl space-y-4 relative group transition-all ${artist.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-2xl border-b border-white/5">
                       <div className="flex items-center space-x-3">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">ARTISTA {idx + 1}</div>
+                        {artist.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => {
+                            const newArtists = [...formData.lineup.artists];
+                            newArtists[idx] = { ...newArtists[idx], hidden: !artist.hidden };
+                            handleChange('lineup', 'artists', newArtists);
+                          }}
+                          className={`p-2 rounded-lg transition-all ${artist.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {artist.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                         <button onClick={() => moveItem('lineup', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
                         <button onClick={() => moveItem('lineup', idx, 'down')} disabled={idx === formData.lineup.artists.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
                         <button
@@ -649,11 +713,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'experience' && (
             <div className="space-y-10">
-              <div className="flex justify-between items-center">
-                <Input label="Título de Sección" value={formData.experience.title} onChange={(v) => handleChange('experience', 'title', v)} />
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1">
+                  <Input label="Título de Sección" value={formData.experience.title} onChange={(v) => handleChange('experience', 'title', v)} />
+                </div>
                 <button
-                  onClick={() => addItem('experience', { title: '', desc: '', img: '', duration: '' })}
-                  className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
+                  onClick={() => addItem('experience', { title: '', desc: '', img: '', duration: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
                 >
                   <Plus size={14} />
                   <span>AGREGAR EXPERIENCIA</span>
@@ -661,10 +727,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               </div>
               <div className="grid grid-cols-1 gap-8">
                 {(formData.experience.items || []).map((item, idx) => (
-                  <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
-                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">EXPERIENCIA {idx + 1}</div>
+                  <div key={idx} className={`p-6 glass-premium rounded-2xl space-y-4 relative group transition-all ${item.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-2xl border-b border-white/5">
                       <div className="flex items-center space-x-3">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">EXPERIENCIA {idx + 1}</div>
+                        {item.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => handleNestedChange('experience', idx, 'hidden', !item.hidden)}
+                          className={`p-2 rounded-lg transition-all ${item.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {item.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                         <button onClick={() => moveItem('experience', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
                         <button onClick={() => moveItem('experience', idx, 'down')} disabled={idx === formData.experience.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
                         <button
@@ -689,25 +764,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'lodging' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.lodging.title} onChange={(v) => handleChange('lodging', 'title', v)} />
-              <Input label="Etiqueta Superior" value={formData.lodging.subtitle} onChange={(v) => handleChange('lodging', 'subtitle', v)} />
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1 space-y-4">
+                  <Input label="Título" value={formData.lodging.title} onChange={(v) => handleChange('lodging', 'title', v)} />
+                  <Input label="Etiqueta Superior" value={formData.lodging.subtitle} onChange={(v) => handleChange('lodging', 'subtitle', v)} />
+                </div>
+                <button
+                  onClick={() => addItem('lodging', { name: '', capacity: '', beds: '', space: '', highlight: '', img: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
+                >
+                  <Plus size={14} />
+                  <span>AGREGAR SUITE</span>
+                </button>
+              </div>
               <TextArea label="Descripción" value={formData.lodging.desc} onChange={(v) => handleChange('lodging', 'desc', v)} />
               <div className="space-y-8">
-                <div className="flex justify-between items-center">
-                  <label className="text-[10px] tracking-widest text-white/40 block font-bold uppercase">GESTIÓN DE SUITES</label>
-                  <button
-                    onClick={() => addItem('lodging', { name: '', capacity: '', beds: '', space: '', highlight: '', img: '' })}
-                    className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
-                  >
-                    <Plus size={14} />
-                    <span>AGREGAR SUITE</span>
-                  </button>
-                </div>
                 {(formData.lodging.suites || []).map((suite, idx) => (
-                  <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
-                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">SUITE {idx + 1}</div>
+                  <div key={idx} className={`p-6 glass-premium rounded-2xl space-y-4 relative group transition-all ${suite.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-2xl border-b border-white/5">
                       <div className="flex items-center space-x-3">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">SUITE {idx + 1}</div>
+                        {suite.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => {
+                            const newSuites = [...formData.lodging.suites];
+                            newSuites[idx] = { ...newSuites[idx], hidden: !suite.hidden };
+                            handleChange('lodging', 'suites', newSuites);
+                          }}
+                          className={`p-2 rounded-lg transition-all ${suite.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {suite.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                         <button onClick={() => moveItem('lodging', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
                         <button onClick={() => moveItem('lodging', idx, 'down')} disabled={idx === formData.lodging.suites.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
                         <button
@@ -824,7 +913,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'caliPackage' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.caliPackage.title} onChange={(v: string) => handleChange('caliPackage', 'title', v)} />
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1">
+                  <Input label="Título" value={formData.caliPackage.title} onChange={(v: string) => handleChange('caliPackage', 'title', v)} />
+                </div>
+                <button
+                  onClick={() => addItem('caliPackage', { title: '', desc: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
+                >
+                  <Plus size={14} />
+                  <span>AGREGAR BENEFICIO</span>
+                </button>
+              </div>
               <TextArea label="Descripción" value={formData.caliPackage.desc} onChange={(v: string) => handleChange('caliPackage', 'desc', v)} />
               <Input label="Icono (Lucide)" value={formData.caliPackage.icon || 'Plane'} onChange={(v: string) => handleChange('caliPackage', 'icon', v)} />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -842,77 +942,85 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                   ]}
                 />
               </div>
-              {formData.caliPackage.btnUrl && !formData.caliPackage.btnUrl.startsWith('#') && (
-                <Input
-                  label="URL Personalizada (https://...)"
-                  value={formData.caliPackage.btnUrl}
-                  onChange={(v: string) => handleChange('caliPackage', 'btnUrl', v)}
-                />
-              )}
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <label className="text-[10px] tracking-widest text-white/40 block font-bold uppercase">Beneficios</label>
-                  <button
-                    onClick={() => addItem('caliPackage', { title: '', desc: '' })}
-                    className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
-                  >
-                    <Plus size={14} />
-                    <span>AGREGAR BENEFICIO</span>
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {(formData.caliPackage.items || []).map((item, idx) => (
-                    <div key={idx} className="p-4 glass rounded-lg space-y-3 relative group">
-                      <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-lg border-b border-white/5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {(formData.caliPackage.items || []).map((item, idx) => (
+                  <div key={idx} className={`p-4 glass-premium rounded-xl space-y-3 relative group transition-all ${item.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-4 -mt-4 p-3 mb-2 rounded-t-xl border-b border-white/5">
+                      <div className="flex items-center space-x-2">
                         <div className="text-gold text-[8px] tracking-widest font-bold uppercase">BENEFICIO {idx + 1}</div>
-                        <div className="flex items-center space-x-2">
-                          <button onClick={() => moveItem('caliPackage', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={14} /></button>
-                          <button onClick={() => moveItem('caliPackage', idx, 'down')} disabled={idx === formData.caliPackage.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={14} /></button>
-                          <button
-                            onClick={() => removeItem('caliPackage', idx)}
-                            className="text-white/40 hover:text-red-500 transition-colors"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
+                        {item.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
                       </div>
-                      <Input label="Beneficio" value={item.title} onChange={(v) => {
-                        const newItems = [...formData.caliPackage.items];
-                        newItems[idx] = { ...newItems[idx], title: v };
-                        handleChange('caliPackage', 'items', newItems);
-                      }} />
-                      <Input label="Detalle" value={item.desc} onChange={(v) => {
-                        const newItems = [...formData.caliPackage.items];
-                        newItems[idx] = { ...newItems[idx], desc: v };
-                        handleChange('caliPackage', 'items', newItems);
-                      }} />
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => {
+                            const newItems = [...formData.caliPackage.items];
+                            newItems[idx] = { ...newItems[idx], hidden: !item.hidden };
+                            handleChange('caliPackage', 'items', newItems);
+                          }}
+                          className={`p-1 rounded transition-all ${item.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {item.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                        <button onClick={() => moveItem('caliPackage', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={14} /></button>
+                        <button onClick={() => moveItem('caliPackage', idx, 'down')} disabled={idx === formData.caliPackage.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={14} /></button>
+                        <button
+                          onClick={() => removeItem('caliPackage', idx)}
+                          className="text-white/40 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                    <Input label="Beneficio" value={item.title} onChange={(v) => {
+                      const newItems = [...formData.caliPackage.items];
+                      newItems[idx] = { ...newItems[idx], title: v };
+                      handleChange('caliPackage', 'items', newItems);
+                    }} />
+                    <Input label="Detalle" value={item.desc} onChange={(v) => {
+                      const newItems = [...formData.caliPackage.items];
+                      newItems[idx] = { ...newItems[idx], desc: v };
+                      handleChange('caliPackage', 'items', newItems);
+                    }} />
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
           {activeTab === 'tickets' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.tickets.title} onChange={(v) => handleChange('tickets', 'title', v)} />
-              <Input label="Subtítulo" value={formData.tickets.subtitle} onChange={(v) => handleChange('tickets', 'subtitle', v)} />
-              <div className="space-y-8">
-                <div className="flex justify-between items-center">
-                  <label className="text-[10px] tracking-widest text-white/40 block font-bold uppercase">Tiers de Boletería</label>
-                  <button
-                    onClick={() => addItem('tickets', { name: '', price: '', features: [], recommended: false, bgImage: '' })}
-                    className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
-                  >
-                    <Plus size={14} />
-                    <span>AGREGAR TIER</span>
-                  </button>
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1 space-y-4">
+                  <Input label="Título" value={formData.tickets.title} onChange={(v) => handleChange('tickets', 'title', v)} />
+                  <Input label="Subtítulo" value={formData.tickets.subtitle} onChange={(v) => handleChange('tickets', 'subtitle', v)} />
                 </div>
+                <button
+                  onClick={() => addItem('tickets', { name: '', price: '', features: [], recommended: false, bgImage: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
+                >
+                  <Plus size={14} />
+                  <span>AGREGAR TIER</span>
+                </button>
+              </div>
+              <div className="space-y-8">
                 {(formData.tickets.tiers || []).map((tier, idx) => (
-                  <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
-                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">TIER {idx + 1}</div>
+                  <div key={idx} className={`p-6 glass-premium rounded-2xl space-y-4 relative group transition-all ${tier.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-2xl border-b border-white/5">
                       <div className="flex items-center space-x-3">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">TIER {idx + 1}</div>
+                        {tier.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => {
+                            const newTiers = [...formData.tickets.tiers];
+                            newTiers[idx] = { ...newTiers[idx], hidden: !tier.hidden };
+                            handleChange('tickets', 'tiers', newTiers);
+                          }}
+                          className={`p-2 rounded-lg transition-all ${tier.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {tier.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                         <button onClick={() => moveItem('tickets', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
                         <button onClick={() => moveItem('tickets', idx, 'down')} disabled={idx === formData.tickets.tiers.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
                         <button
@@ -1003,7 +1111,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
             <div className="space-y-10">
               <Input label="Título de la Sección" value={formData.buy.title} onChange={(v) => handleChange('buy', 'title', v)} />
               <Input label="Descripción Corta" value={formData.buy.description} onChange={(v) => handleChange('buy', 'description', v)} />
-              <div className="p-6 glass rounded-xl space-y-4">
+              <div className="p-6 glass-premium rounded-2xl space-y-4">
                 <div className="text-gold text-[10px] tracking-widest font-bold uppercase">Widget FourVenues</div>
                 <Input
                   label="URL del Script (Iframe)"
@@ -1020,24 +1128,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
 
           {activeTab === 'faqs' && (
             <div className="space-y-10">
-              <Input label="Título" value={formData.faqs.title} onChange={(v) => handleChange('faqs', 'title', v)} />
-              <Input label="Subtítulo" value={formData.faqs.subtitle} onChange={(v) => handleChange('faqs', 'subtitle', v)} />
-              <div className="space-y-8">
-                <div className="flex justify-between items-center">
-                  <label className="text-gold text-[10px] tracking-widest font-bold uppercase">Preguntas Frecuentes</label>
-                  <button
-                    onClick={() => addItem('faqs', { question: '', answer: '' })}
-                    className="text-gold hover:text-white transition-colors flex items-center space-x-1 text-[10px] font-bold"
-                  >
-                    <Plus size={14} />
-                    <span>AGREGAR PREGUNTA</span>
-                  </button>
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div className="flex-1 space-y-4">
+                  <Input label="Título" value={formData.faqs.title} onChange={(v) => handleChange('faqs', 'title', v)} />
+                  <Input label="Subtítulo" value={formData.faqs.subtitle} onChange={(v) => handleChange('faqs', 'subtitle', v)} />
                 </div>
+                <button
+                  onClick={() => addItem('faqs', { question: '', answer: '', hidden: false })}
+                  className="bg-gold/10 hover:bg-gold/20 text-gold px-6 py-3 rounded-full transition-all flex items-center space-x-2 text-[10px] font-black tracking-widest border border-gold/20"
+                >
+                  <Plus size={14} />
+                  <span>AGREGAR PREGUNTA</span>
+                </button>
+              </div>
+              <div className="space-y-8">
                 {(formData.faqs.items || []).map((item, idx) => (
-                  <div key={idx} className="p-6 glass rounded-xl space-y-4 relative group">
-                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-xl border-b border-white/5">
-                      <div className="text-gold text-[10px] tracking-widest font-bold uppercase">PREGUNTA {idx + 1}</div>
+                  <div key={idx} className={`p-6 glass-premium rounded-2xl space-y-4 relative group transition-all ${item.hidden ? 'opacity-50 grayscale' : ''}`}>
+                    <div className="flex justify-between items-center bg-white/5 -mx-6 -mt-6 p-4 mb-2 rounded-t-2xl border-b border-white/5">
                       <div className="flex items-center space-x-3">
+                        <div className="text-gold text-[10px] tracking-widest font-bold uppercase">PREGUNTA {idx + 1}</div>
+                        {item.hidden && <span className="text-[8px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Oculto</span>}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => {
+                            const newItems = [...formData.faqs.items];
+                            newItems[idx] = { ...newItems[idx], hidden: !item.hidden };
+                            handleChange('faqs', 'items', newItems);
+                          }}
+                          className={`p-2 rounded-lg transition-all ${item.hidden ? 'text-red-500 hover:bg-red-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'}`}
+                        >
+                          {item.hidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                         <button onClick={() => moveItem('faqs', idx, 'up')} disabled={idx === 0} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronUp size={18} /></button>
                         <button onClick={() => moveItem('faqs', idx, 'down')} disabled={idx === formData.faqs.items.length - 1} className="text-white/40 hover:text-gold disabled:opacity-10 transition-colors"><ChevronDown size={18} /></button>
                         <button
@@ -1090,7 +1212,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
           )}
           {activeTab === 'seo' && (
             <div className="space-y-8">
-              <div className="p-8 glass rounded-2xl space-y-6 border border-white/5">
+              <div className="p-8 glass-premium rounded-2xl space-y-6 border border-white/5">
                 <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
                     <Eye size={18} />
@@ -1103,14 +1225,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                     label="Título Social"
                     value={formData.seo.title}
                     onChange={(v: string) => handleChange('seo', 'title', v)}
-                    placeholder="Ej: LA Frecuencia Violeta | Eventos"
+                    placeholder="Ej: Technical Live | Eventos"
                   />
                   <TextArea
                     label="Descripción Social"
                     value={formData.seo.description}
                     onChange={(v: string) => handleChange('seo', 'description', v)}
                   />
-                  
+
                   <div className="space-y-4">
                     <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-2">Imagen de Previsualización</h4>
                     <FileUpload
@@ -1124,7 +1246,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                     />
                     {formData.seo.image && (
                       <div className="mt-4 p-4 border border-white/10 rounded-xl overflow-hidden bg-white/5">
-                         <img src={formData.seo.image} alt="SEO Preview" className="w-full h-auto rounded-lg max-h-[300px] object-cover" />
+                        <img src={formData.seo.image} alt="SEO Preview" className="w-full h-auto rounded-lg max-h-[300px] object-cover" />
                       </div>
                     )}
                   </div>
@@ -1137,7 +1259,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                   />
                 </div>
               </div>
-              
+
               <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
                 <p className="text-[10px] text-emerald-500 font-bold leading-relaxed">
                   💡 TIP: Después de guardar, si compartes el link en WhatsApp y no ves el cambio de inmediato, es porque WhatsApp guarda la imagen en su caché. El cambio puede tardar unas horas en reflejarse para todo el mundo.
@@ -1148,7 +1270,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
           {activeTab === 'settings' && (
             <div className="space-y-8">
               {/* 1. Información General */}
-              <div className="p-8 glass rounded-2xl space-y-6 border border-white/5">
+              <div className="p-8 glass-premium rounded-2xl space-y-6 border border-white/5">
                 <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
                     <Type size={18} />
@@ -1177,7 +1299,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                       label="Texto del Menú Pill (Fijo)"
                       value={formData.settings.navBrandText}
                       onChange={(v) => handleChange('settings', 'navBrandText', v)}
-                      placeholder="Ej: TAY BEACH 2026"
+                      placeholder="Ej: Technical Live"
                       icon={<Type size={14} />}
                     />
                     <Input
@@ -1192,7 +1314,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               </div>
 
               {/* 2. Identidad Visual (Logos) */}
-              <div className="p-8 glass rounded-2xl space-y-8 border border-white/5">
+              <div className="p-8 glass-premium rounded-2xl space-y-8 border border-white/5">
                 <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
                     <ImageIcon size={18} />
@@ -1288,7 +1410,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               </div>
 
               {/* 3. Estética & Pantallas */}
-              <div className="p-8 glass rounded-2xl space-y-8 border border-white/5">
+              <div className="p-8 glass-premium rounded-2xl space-y-8 border border-white/5">
                 <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
                     <Layout size={18} />
@@ -1371,7 +1493,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 </div>
               </div>
 
-              <div className="p-6 glass rounded-xl space-y-6">
+              <div className="p-6 glass-premium rounded-2xl space-y-6">
                 <div className="text-gold text-[10px] tracking-widest font-bold uppercase">Contacto</div>
                 <Input
                   label="Número de WhatsApp (Sin +, ej: 57300...)"
@@ -1381,7 +1503,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
                 />
               </div>
 
-              <div className="p-6 glass rounded-xl space-y-6">
+              <div className="p-6 glass-premium rounded-2xl space-y-6">
                 <div className="text-gold text-[10px] tracking-widest font-bold uppercase">Tipografía (Fuentes Personalizadas)</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">

@@ -12,7 +12,7 @@ export const Tickets = ({ data }: { data: PageData['tickets'] }) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                    {(data.tiers || []).map((tier, idx) => (
+                    {(data.tiers || []).filter(tier => !tier.hidden).map((tier, idx) => (
                         <div
                             key={idx}
                             className={`relative p-8 md:p-12 flex flex-col items-center text-center transition-all duration-500 overflow-hidden rounded-2xl ${tier.recommended ? 'glass border-gold/50 md:scale-105 z-10' : 'bg-white/5 border border-white/5'}`}
