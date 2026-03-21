@@ -74,7 +74,7 @@ export const Login = ({ onClose, onSuccess }: LoginProps) => {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@taybeach.com"
+                                    placeholder="admin@technicalive.com"
                                     className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 text-sm text-white focus:outline-none focus:border-gold/50 transition-all font-sans font-light"
                                     required
                                 />
