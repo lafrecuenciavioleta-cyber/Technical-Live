@@ -7,9 +7,20 @@ export const Buy = ({ data }: { data: BuySection }) => {
     const container = document.getElementById('fv-container');
     if (!container) return;
 
-    // Detectar y persistir promotor (soporta ?p= o ?promoter=)
+    // Detectar y persistir promotor (soporta ?p=, ?promoter= o ruta /nombre/events/...)
     const params = new URLSearchParams(window.location.search);
-    const promoterParam = params.get('p') || params.get('promoter');
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    
+    let promoterParam = params.get('p') || params.get('promoter');
+    
+    // Si la ruta es /promotor/events/id, extraemos el promotor de la ruta
+    if (!promoterParam && pathParts.length >= 2 && (pathParts.includes('events') || pathParts.includes('tickets'))) {
+      const eventsIdx = pathParts.findIndex(p => p === 'events' || p === 'tickets');
+      if (eventsIdx > 0) {
+        promoterParam = pathParts[eventsIdx - 1];
+      }
+    }
+
     if (promoterParam) {
       localStorage.setItem('fv_promoter', promoterParam);
     }

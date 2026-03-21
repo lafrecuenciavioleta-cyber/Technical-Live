@@ -174,6 +174,19 @@ export default function App() {
     loadData();
   }, []);
 
+  // Efecto para manejar el scroll automático si viene de una URL de evento/compra
+  useEffect(() => {
+    const isEventPath = window.location.pathname.includes('/events/') || window.location.hash.includes('events');
+    if (isEventPath && !isLoading) {
+      setTimeout(() => {
+        const buySection = document.getElementById('buy');
+        if (buySection) {
+          buySection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 1000); // Pequeño delay para asegurar que el widget empiece a cargar
+    }
+  }, [isLoading]);
+
   useEffect(() => {
     document.title = pageData.settings.siteName;
     document.documentElement.style.setProperty('--accent-color', pageData.settings.accentColor);
