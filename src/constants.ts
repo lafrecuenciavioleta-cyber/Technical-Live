@@ -285,9 +285,9 @@ export const INITIAL_DATA: PageData = {
     faqs: 'PREGUNTAS'
   },
   seo: {
-    title: 'Technical Live',
-    description: 'Entradas, listas y zonas VIP para los mejores eventos. ¡No te pierdas una experiencia inolvidable! | Compra aquí',
-    image: 'https://www.technicalive.com/seo-image.webp',
+    title: 'Technical Live | Entradas 06 de Junio',
+    description: 'Compra aquí rapido & seguro tus entradas para este próximo 06 de Junio. ¡No te quedes por fuera!',
+    image: 'https://i.imgur.com/fqVWvah.png',
     keywords: 'tech house, eventos, cali, colombia, musica electronica'
   }
 };
