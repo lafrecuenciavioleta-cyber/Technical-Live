@@ -283,5 +283,11 @@ export const INITIAL_DATA: PageData = {
     tickets: 'BOLETERÍA',
     buy: 'COMPRAR',
     faqs: 'PREGUNTAS'
+  },
+  seo: {
+    title: 'Technical Live | LA Frecuencia Violeta',
+    description: 'Entradas, listas y zonas VIP para los mejores eventos de la escena Tech House. ¡No te pierdas una experiencia inolvidable! | Compra aquí',
+    image: 'https://www.taybeach.com.co/wp-content/uploads/2025/10/foto.webp',
+    keywords: 'tech house, eventos, cali, colombia, musica electronica'
   }
 };

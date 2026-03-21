@@ -234,6 +234,41 @@ export default function App() {
     styleTag.innerHTML = fontFaceRules;
   }, [pageData.settings.accentColor, pageData.settings.fontDisplay, pageData.settings.fontSans, pageData.settings.fontDisplayUrl, pageData.settings.fontSansUrl, pageData.settings.siteName]);
 
+  // Efecto para actualizar Metatags SEO/Social dinámicamente
+  useEffect(() => {
+    if (!pageData.seo) return;
+
+    // Actualizar Título de la pestaña
+    document.title = pageData.seo.title || pageData.settings.siteName;
+
+    // Función auxiliar para actualizar o crear meta tags
+    const updateMeta = (name: string, content: string, attr: 'name' | 'property' = 'name') => {
+      let meta = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute(attr, name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+
+    // Meta tags primarios
+    updateMeta('description', pageData.seo.description);
+    updateMeta('keywords', pageData.seo.keywords || '');
+
+    // Open Graph / WhatsApp / Facebook
+    updateMeta('og:title', pageData.seo.title, 'property');
+    updateMeta('og:description', pageData.seo.description, 'property');
+    updateMeta('og:image', pageData.seo.image, 'property');
+    updateMeta('og:url', window.location.href, 'property');
+
+    // Twitter
+    updateMeta('twitter:title', pageData.seo.title);
+    updateMeta('twitter:description', pageData.seo.description);
+    updateMeta('twitter:image', pageData.seo.image);
+
+  }, [pageData.seo, pageData.settings.siteName]);
+
   const handleSave = async (newData: PageData) => {
     try {
       const { error } = await supabase

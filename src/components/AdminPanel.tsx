@@ -23,7 +23,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     };
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'fontDisplayUrl' | 'fontSansUrl' | 'headerLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'adminLogoUrl' | 'globalBgImage' | 'globalBgImageMobile' | 'globalBgImageDesktop') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'seoImage' | 'fontDisplayUrl' | 'fontSansUrl' | 'headerLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'adminLogoUrl' | 'globalBgImage' | 'globalBgImageMobile' | 'globalBgImageDesktop') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -44,7 +44,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
         .from('media')
         .getPublicUrl(filePath);
 
-      handleChange('settings', field, publicUrl);
+      if (field === 'seoImage') {
+        handleChange('seo', 'image', publicUrl);
+      } else {
+        handleChange('settings', field, publicUrl);
+      }
     } catch (error: any) {
       console.error('Error uploading file:', error);
       alert(`Error al subir el archivo: ${error.message || 'Error desconocido'}\n\nAsegúrate de que el bucket "media" exista en Supabase y tenga las políticas de RLS correctas.`);
@@ -157,6 +161,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
     { id: 'buy', label: 'Comprar' },
     { id: 'faqs', label: 'Preguntas' },
     { id: 'footer', label: 'Footer' },
+    { id: 'seo', label: 'SEO / Social' },
     { id: 'settings', label: 'Configuración' },
   ];
 
@@ -1083,7 +1088,63 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ data, onSave, onClose })
               </div>
             </div>
           )}
+          {activeTab === 'seo' && (
+            <div className="space-y-8">
+              <div className="p-8 glass rounded-2xl space-y-6 border border-white/5">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-4 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold">
+                    <Eye size={18} />
+                  </div>
+                  <h3 className="text-white font-archivo font-black tracking-tighter text-lg italic uppercase">Vista Previa Social (WhatsApp/FB/X)</h3>
+                </div>
 
+                <div className="space-y-6">
+                  <Input
+                    label="Título Social"
+                    value={formData.seo.title}
+                    onChange={(v: string) => handleChange('seo', 'title', v)}
+                    placeholder="Ej: LA Frecuencia Violeta | Eventos"
+                  />
+                  <TextArea
+                    label="Descripción Social"
+                    value={formData.seo.description}
+                    onChange={(v: string) => handleChange('seo', 'description', v)}
+                  />
+                  
+                  <div className="space-y-4">
+                    <h4 className="text-gold text-[10px] tracking-widest font-bold uppercase mb-2">Imagen de Previsualización</h4>
+                    <FileUpload
+                      label="Subir Imagen SEO"
+                      url={formData.seo.image}
+                      onFileSelect={(e: any) => handleFileUpload(e, 'seoImage')}
+                      isUploading={isUploading === 'seoImage'}
+                      onClear={() => handleChange('seo', 'image', '')}
+                      accept="image/*"
+                      placeholder="Medida recomendada: 1200x630 px"
+                    />
+                    {formData.seo.image && (
+                      <div className="mt-4 p-4 border border-white/10 rounded-xl overflow-hidden bg-white/5">
+                         <img src={formData.seo.image} alt="SEO Preview" className="w-full h-auto rounded-lg max-h-[300px] object-cover" />
+                      </div>
+                    )}
+                  </div>
+
+                  <Input
+                    label="Palabras Clave (Keywords)"
+                    value={formData.seo.keywords || ''}
+                    onChange={(v: string) => handleChange('seo', 'keywords', v)}
+                    placeholder="Separadas por comas..."
+                  />
+                </div>
+              </div>
+              
+              <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
+                <p className="text-[10px] text-emerald-500 font-bold leading-relaxed">
+                  💡 TIP: Después de guardar, si compartes el link en WhatsApp y no ves el cambio de inmediato, es porque WhatsApp guarda la imagen en su caché. El cambio puede tardar unas horas en reflejarse para todo el mundo.
+                </p>
+              </div>
+            </div>
+          )}
           {activeTab === 'settings' && (
             <div className="space-y-8">
               {/* 1. Información General */}

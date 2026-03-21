@@ -150,4 +150,10 @@ export interface PageData {
   sectionOrder: string[];
   hiddenSections: string[];
   sectionLabels: Record<string, string>;
+  seo: {
+    title: string;
+    description: string;
+    image: string;
+    keywords?: string;
+  };
 }
