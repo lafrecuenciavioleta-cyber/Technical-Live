@@ -7,45 +7,81 @@ export const Buy = ({ data }: { data: BuySection }) => {
     const container = document.getElementById('fv-container');
     if (!container) return;
 
-    // Detectar y persistir promotor (soporta ?p=, ?promoter= o ruta /nombre/events/...)
+    // --- 1. DETECTAR PROMOTOR ---
     const params = new URLSearchParams(window.location.search);
     const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const hash = window.location.hash;
 
+    // Prioridad 1: Parámetro query (?p= o ?promoter=)
     let promoterParam = params.get('p') || params.get('promoter');
 
-    // Si la ruta es /promotor/events/id, extraemos el promotor de la ruta
-    if (!promoterParam && pathParts.length >= 2 && (pathParts.includes('events') || pathParts.includes('tickets'))) {
-      const eventsIdx = pathParts.findIndex(p => p === 'events' || p === 'tickets');
-      if (eventsIdx > 0) {
-        promoterParam = pathParts[eventsIdx - 1];
-      }
+    // Prioridad 2: Primer parte del path (ej: /the-cluster)
+    // Evitamos palabras reservadas que podrían colisionar
+    const reservedPaths = ['admin', 'login', 'events', 'tickets', 'buy'];
+    if (!promoterParam && pathParts.length > 0 && !reservedPaths.includes(pathParts[0].toLowerCase())) {
+      promoterParam = pathParts[0];
     }
 
+    // Persistir si encontramos uno nuevo
     if (promoterParam) {
       localStorage.setItem('fv_promoter', promoterParam);
     }
     const activePromoter = localStorage.getItem('fv_promoter') || 'technical-live';
 
-    // Limpieza agresiva de cualquier rastro previo antes de iniciar
-    const cleanup = () => {
-      const existingScript = document.getElementById('fv-script');
-      if (existingScript) existingScript.remove();
-      container.innerHTML = '<div id="fourvenues-iframe" class="w-full h-full min-h-[600px]"></div>';
-      // Eliminar cualquier iframe huérfano que FourVenues haya podido inyectar fuera del contenedor
-      document.querySelectorAll('iframe[src*="fourvenues"]').forEach(el => el.remove());
-    };
+    // --- 2. DETECTAR EVENTO ---
+    // Buscamos el ID en el hash (soporta #events/slug-ID o #events/ID)
+    const eventMatch = hash.match(/(?:events|tickets)\/([^/?#]+)/);
+    let extractedEventId = eventMatch ? eventMatch[1] : null;
 
-    cleanup();
+    // Si el slug contiene guiones, el ID suele ser la última parte (ej: sabado...-Q9E4)
+    if (extractedEventId && extractedEventId.includes('-')) {
+      const parts = extractedEventId.split('-');
+      const potentialId = parts[parts.length - 1];
+      // Solo tomamos la última parte si parece un ID corto (ej: 4-6 caracteres)
+      if (potentialId.length >= 4 && potentialId.length <= 10) {
+        extractedEventId = potentialId;
+      }
+    }
 
+    // --- 3. CONSTRUIR URL DEL WIDGET ---
     let baseUrl = data.widgetUrl;
-    // Adaptar URL al formato de promotor: /assets/iframe/{promoter}/...
+
+    // Reemplazar promotor en la URL base si es necesario
     if (activePromoter !== 'technical-live') {
       baseUrl = baseUrl.replace('/technical-live/', `/${activePromoter}/`);
+    }
+
+    // Reemplazar evento en la URL base si detectamos uno en el hash
+    if (extractedEventId) {
+      // Buscamos el patrón del ID en la URL original (ej: Q9E4)
+      // Extraemos el ID actual de la widgetUrl (segunda parte después de /iframe/promoter/)
+      const urlParts = baseUrl.split('/');
+      const iframeIdx = urlParts.indexOf('iframe');
+      if (iframeIdx !== -1 && urlParts[iframeIdx + 2]) {
+        const currentIdInUrl = urlParts[iframeIdx + 2].split('?')[0];
+        if (currentIdInUrl !== extractedEventId) {
+          baseUrl = baseUrl.replace(`/${currentIdInUrl}?`, `/${extractedEventId}?`);
+        }
+      }
     }
 
     const finalUrl = baseUrl.includes('theme=')
       ? baseUrl
       : `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}theme=dark`;
+
+    // --- 4. INYECCIÓN DEL SCRIPT ---
+    const cleanup = () => {
+      const existingScript = document.getElementById('fv-script');
+      if (existingScript) existingScript.remove();
+      // Solo limpiar el contenedor si realmente vamos a re-inyectar
+      if (container) {
+        container.innerHTML = '<div id="fourvenues-iframe" class="w-full h-full min-h-[600px]"></div>';
+      }
+      // Eliminar iframes huérfanos
+      document.querySelectorAll('iframe[src*="fourvenues"]').forEach(el => el.remove());
+    };
+
+    cleanup();
 
     const script = document.createElement('script');
     script.id = 'fv-script';
@@ -54,8 +90,13 @@ export const Buy = ({ data }: { data: BuySection }) => {
 
     container.appendChild(script);
 
-    return cleanup;
-  }, [data.widgetUrl]);
+    return () => {
+      // No hacemos cleanup agresivo al desmontar para evitar romper el flujo de pago 
+      // si hay re-renders menores, pero sí eliminamos el script
+      const s = document.getElementById('fv-script');
+      if (s) s.remove();
+    };
+  }, [data.widgetUrl, window.location.hash, window.location.pathname, window.location.search]);
 
   return (
     <section className="py-24 px-4 bg-dark/20 backdrop-blur-sm relative overflow-hidden w-full max-w-[100vw]">
